@@ -2,5 +2,7 @@
 A databender made in C++. A work in progress that might not be too functional...
 
 ## Progress
-So far, random databending can be done. Example code can be seen in `main.cpp`. 
-Work is being done to change from hex-databending to binary-databending, although hex will be kept as legacy.
+Two methods of databending are possible, HEX and ASCII. 
+ASCII has been found to be ~12x faster than the HEX method, however HEX is being kept as a legacy, or incase of future convenience.
+
+There is one limitation that the code cannot modify files that are too large. This is going to be fixed in a later commit however using memory mapping.
