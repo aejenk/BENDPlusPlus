@@ -17,6 +17,10 @@ char randomHex(){
     return hexc[rand()%16];
 }
 
+char randomASCII(){
+    return static_cast<char>(rand() % 256);
+}
+
 vector<string> strSplit(string s, char delimit){
     stringstream ss (s);
     string segment;
@@ -83,31 +87,65 @@ string mutateHex(string hex, int iterations){
     return hex;
 }
 
+string mutate(string bin, int iterations){
+    unsigned long len = bin.length();
+
+    for(int i = 0; i < iterations; i++){
+        bin[rand() % len] = randomASCII();
+    }
+
+    return bin;
+}
+
 void hexToFile(string hexcode, const string& filename){
     cout << "Saving hexcode as binary to file [" << filename << "]" << endl;
     ofstream ofile (filename, ios::out | ios::binary);
     ofile << ToStr(hexcode);
 }
 
+void binToFile(string bin, const string& filename){
+    cout << "Saving binary to file [" << filename << "]" << endl;
+    ofstream ofile (filename, ios::out | ios::binary);
+    ofile << bin;
+}
+
 string fileToHex(const string& filename){
     return ToHex(loadFileAsString(filename, true), true);
+}
+
+void testhex() {
+    string hexcode = fileToHex("covvv.png");
+
+    string mut;
+
+    int n = 20;
+
+    for(int i = 0; i < n; i++){
+        char buf[50];
+        mut = mutateHex(hexcode, 1);
+        int m = sprintf(buf, "muthex-%d.png", i);
+        hexToFile(mut, string(buf, m));
+    }
+}
+
+void testbin() {
+    string bin = loadFileAsString("H.avi", true);
+    string mut;
+    int n = 10;
+
+    for(int i = 0; i < n; i++){
+        char buf[50];
+        mut = mutate(bin, 30);
+        int m = sprintf(buf, "mutbin-%d.avi", i);
+        binToFile(mut, string(buf, m));
+    }
 }
 
 int main() {
     srand(time(0));
 
-    string hexcode = fileToHex("covvv.png");
-
-    string mut;
-
-    int n = 5;
-
-    for(int i = 0; i < n; i++){
-        char buf[50];
-        mut = mutateHex(hexcode, 1);
-        int n = sprintf(buf, "mut-%d.png", i);
-        hexToFile(mut, string(buf, n));
-    }
+    // testhex();
+    testbin();
 
     return 0;
 }
