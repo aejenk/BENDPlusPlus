@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <time.h>
 // #include <cstdlib>
 // #include <cstddef>
 
@@ -56,31 +57,6 @@ string ToStr(const string hex){
     return newString;
 }
 
-// format hex code to be spaced out per 2 character (8-bit, 4-bits per hex)
-string hexFormat(string& hex)
-{
-    int len = hex.length();
-    int spaces = (len/2)-1;
-
-    cout << "String with length [" << len << "] and spaces [" << spaces << "]" << endl;
-
-    int a = 0;
-    int wait = 1000; 
-
-    for(int i = 2; i < len+spaces; i+=3){
-        a++;
-        if(a > wait){
-            cout << ".";
-            a = 0;
-        }
-        hex.insert(i, 1, ' ');
-    }
-
-    cout << endl;
-
-    return hex;
-}
-
 string loadFileAsString(const string& filename, bool binary){
     ifstream ifile = (binary) ? ifstream(filename, ios::in | ios::binary | ios::ate) : ifstream(filename, ios::in | ios::ate);
 
@@ -91,10 +67,6 @@ string loadFileAsString(const string& filename, bool binary){
         ifile.read(memblock, size);
         ifile.close();
 
-        // cout << "File completely loaded in memory." << endl;
-
-        // cout << size;
-
         return string(memblock, size);
     }
 
@@ -104,11 +76,9 @@ string loadFileAsString(const string& filename, bool binary){
 string mutateHex(string hex, int iterations){
     unsigned long len = hex.length();
 
-    // cout << "Beginning mutations..." << endl;
     for(int i = 0; i < iterations; i++){
         hex[rand() % len] = randomHex();
     }
-    // cout << "Mutations complete!" << endl;
 
     return hex;
 }
@@ -120,22 +90,17 @@ void hexToFile(string hexcode, const string& filename){
 }
 
 string fileToHex(const string& filename){
-    string hex = ToHex(loadFileAsString(filename, true), true);
-
-    string hexCode;
-
-    for (size_t i = 0; i < hex.size(); i += 2)
-    hexCode += hex.substr(i, 2);
-
-    return hexCode;
+    return ToHex(loadFileAsString(filename, true), true);
 }
 
 int main() {
+    srand(time(0));
+
     string hexcode = fileToHex("covvv.png");
 
     string mut;
 
-    int n = 1;
+    int n = 5;
 
     for(int i = 0; i < n; i++){
         char buf[50];
