@@ -2,10 +2,31 @@
 #include <iomanip>
 #include <iostream>
 #include <algorithm>
+#include <string>
 #include <sstream>
 #include <vector>
+// #include <cstdlib>
+// #include <cstddef>
 
 using namespace std;
+
+char hexc[17] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
+char randomHex(){
+    return hexc[rand()%16];
+}
+
+vector<string> strSplit(string s, char delimit){
+    stringstream ss (s);
+    string segment;
+    vector<string> seglist;
+
+    while(getline(ss, segment, delimit)){
+        seglist.push_back(segment);
+    }
+
+    return seglist;
+}
 
 // converts a string into hexadecimal characters.
 string ToHex(const string& s, bool upper_case)
@@ -21,19 +42,18 @@ string ToHex(const string& s, bool upper_case)
     return ret.str();
 }
 
-// converts a vector of 8-bit hexadecimals into a long string
-string ToStr(const vector<string> vs){    
-    // Iterate over vs
-    stringstream bin;
-    for(auto const& hexcode: vs){
-        unsigned int x;
-        stringstream ss;
-        ss << std::hex << hexcode;
-        ss >> x;
-        bin << static_cast<char>(x);   
+string ToStr(const string hex){
+    string newString;
+
+    // cout << "converting hexstr to binstr" << endl;
+    int len = hex.length();
+    for(int i=0; i< len; i+=2){
+        string byte = hex.substr(i,2);
+        char chr = (char) (int)strtol(byte.c_str(), NULL, 16);
+        newString.push_back(chr);
     }
 
-    return bin.str();
+    return newString;
 }
 
 // format hex code to be spaced out per 2 character (8-bit, 4-bits per hex)
@@ -42,82 +62,87 @@ string hexFormat(string& hex)
     int len = hex.length();
     int spaces = (len/2)-1;
 
+    cout << "String with length [" << len << "] and spaces [" << spaces << "]" << endl;
+
+    int a = 0;
+    int wait = 1000; 
+
     for(int i = 2; i < len+spaces; i+=3){
+        a++;
+        if(a > wait){
+            cout << ".";
+            a = 0;
+        }
         hex.insert(i, 1, ' ');
     }
+
+    cout << endl;
 
     return hex;
 }
 
-// converts a file into hex
-void fileToHex(const string& inname, const string& outname){
-    ifstream::pos_type size;
-    char * memblock;
-
-    /*  The input file has the flags set to be a binary file.
-        The ios::ate flag is to know the size of the file.
-        The output file has no flags set as they are not important */
-    ifstream ifile (inname, ios::in | ios::binary | ios::ate);
-    ofstream ofile (outname);
+string loadFileAsString(const string& filename, bool binary){
+    ifstream ifile = (binary) ? ifstream(filename, ios::in | ios::binary | ios::ate) : ifstream(filename, ios::in | ios::ate);
 
     if(ifile.is_open()){
-        // reads input binary file
-        size = ifile.tellg();
-        memblock = new char [size];
+        ifstream::pos_type size = ifile.tellg();
+        char * memblock = new char [size];
         ifile.seekg(0, ios::beg);
         ifile.read(memblock, size);
         ifile.close();
 
-        cout << "File completely loaded in memory." << endl;
+        // cout << "File completely loaded in memory." << endl;
 
-        cout << size;
+        // cout << size;
 
-        // converts input binary file into hexcode
-        string hex = ToHex(string(memblock, size), true);
-
-        // stores formatted hexcode into the output file
-        ofile << hexFormat(hex);
+        return string(memblock, size);
     }
+
+    return "";
 }
 
-void hexToFile(const string& inname, const string& outname){
-    ofstream::pos_type size;
-    char * memblock;
-    
-    /*  The input file has an ios::ate flag to know its size.
-        The output file has the ios::binary flag, since its a binary file. */
-    ifstream ifile (inname, ios::in | ios::ate);
-    ofstream ofile (outname, ios::out | ios::binary);
+string mutateHex(string hex, int iterations){
+    unsigned long len = hex.length();
 
-    if(ifile.is_open()){
-        // reads input file
-        size = ifile.tellg();
-        memblock = new char [size];
-        ifile.seekg(0, ios::beg);
-        ifile.read(memblock, size);
-        ifile.close();
-
-        cout << "File completely loaded in memory." << endl;
-
-        cout << size;
-
-        // Splits hexcode according to spaces
-        string hex = string(memblock, size);
-        stringstream ss (hex);
-        string segment;
-        vector<string> seglist;
-
-        while(getline(ss, segment, ' ')){
-            seglist.push_back(segment);
-        }
-
-        // stores the binary string back into the output file
-        ofile << ToStr(seglist);
+    // cout << "Beginning mutations..." << endl;
+    for(int i = 0; i < iterations; i++){
+        hex[rand() % len] = randomHex();
     }
+    // cout << "Mutations complete!" << endl;
+
+    return hex;
+}
+
+void hexToFile(string hexcode, const string& filename){
+    cout << "Saving hexcode as binary to file [" << filename << "]" << endl;
+    ofstream ofile (filename, ios::out | ios::binary);
+    ofile << ToStr(hexcode);
+}
+
+string fileToHex(const string& filename){
+    string hex = ToHex(loadFileAsString(filename, true), true);
+
+    string hexCode;
+
+    for (size_t i = 0; i < hex.size(); i += 2)
+    hexCode += hex.substr(i, 2);
+
+    return hexCode;
 }
 
 int main() {
-    fileToHex("old.png", "hex.txt"); // converts a binary file (old.png) to a text file storing its hexcode
-    hexToFile("hex.txt", "new.png"); // converts a text file with hexcode into a binary file (old.png)
+    string hexcode = fileToHex("covvv.png");
+
+    string mut;
+
+    int n = 1;
+
+    for(int i = 0; i < n; i++){
+        char buf[50];
+        mut = mutateHex(hexcode, 1);
+        int n = sprintf(buf, "mut-%d.png", i);
+        hexToFile(mut, string(buf, n));
+    }
+
     return 0;
 }
