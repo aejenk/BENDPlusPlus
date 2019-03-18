@@ -11,10 +11,7 @@ using namespace std;
 
 class BinBender {
     public:
-    // variables
     string contents;
-
-    // functions
     void loadFile(const string& filename);
     void mutate(const int iter);
     void saveFile(const string& filename);
