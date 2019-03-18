@@ -23,8 +23,6 @@ void testhex() {
 }
 
 void testbin(BinBender bx, string name) {
-    // BinBender bx;
-    // bx.loadFile("h.avi");
     bx.mutate(600);
     bx.saveFile(name);
 }
@@ -32,11 +30,17 @@ void testbin(BinBender bx, string name) {
 int main() {
     srand(time(0));
 
-    BinBender bx;
-    bx.loadFile("blocks.avi");
+    string name = "sacrifgice.avi";
+    string savename;
+    savename.assign(name);
 
-    for(int i = 0; i < 4; i++){
-        testbin(bx, "blocks" + to_string(i) + ".avi");
+    BinBender bx;
+    bx.loadFile(name);
+
+    for(int i = 0; i < 40; i++){
+        savename.insert(savename.find("."), to_string(i));
+        testbin(bx, savename);
+        savename.assign(name);
     }
 
     return 0;
