@@ -8,7 +8,7 @@ void HexBender::loadFile(const string& filename){
     contents = toHex(loadFileAsStr(filename));
 }
 
-void HexBender::mutate(const int iter){
+void HexBender::mutate(const int iter = 1){
     unsigned long len = contents.length();
 
     for(int i = 0; i < iter; i++){

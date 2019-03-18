@@ -8,7 +8,7 @@ void BinBender::loadFile(const string& filename){
     contents = loadFileAsStr(filename);
 }
 
-void BinBender::mutate(const int iter){
+void BinBender::mutate(const int iter = 1){
     unsigned long len = contents.length();
 
     for(int i = 0; i < iter; i++){
