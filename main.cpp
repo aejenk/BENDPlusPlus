@@ -24,9 +24,9 @@ void testhex() {
 
 void testbin() {
     BinBender bx;
-    bx.loadFile("GIGA.mp4");
-    bx.mutate(10);
-    bx.saveFile("GIGA-mut.mp4");
+    bx.loadFile("h.avi");
+    bx.mutate(100);
+    bx.saveFile("h-mut.avi");
 }
 
 int main() {

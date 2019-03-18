@@ -17,34 +17,25 @@ void BinBender::mutate(const int iter = 1){
 }
 
 void BinBender::saveFile(const string& filename){
-    cout << "SAVING FILE..." << endl;
+    cout << "Saving [" << filename << "]";
 
     ofstream ofile (filename, ios::out | ios::binary);
     char buffer[bufferSize];
 
+    int a = 0;
+
     for(int i = 0; i < bufferings; i++){
-        cout << "BEGINLOOP" << endl;
-        long begin = i*bufferSize;
-        long end = (i+1)*bufferSize-1;
+        a++;
+        if(a >= bufferings/10){
+            cout << ".";
+            a = 0;
+        }
 
-        cout << begin << "," << end << endl;
-
-        cout << "COPYING... " << buffer[0] << "," << buffer[bufferSize] << endl;
-        size_t len = contents.copy(buffer, begin, end);
-
-        // cout << "TERMINATE..." << endl;
-        buffer[bufferSize] = '\0';
-
-        // cout << "CAST..." << endl;
-        string bufferstr = string(buffer, bufferSize);
-
-        buffer[0] = '\0';
-
-        // cout << "WRITE..." << endl;
+        string bufferstr = contents.substr(i*bufferSize, bufferSize);
         ofile << bufferstr;
     }
 
-    // ofile << contents;
+    cout << endl;
 }
 
 // PRIVATE
@@ -52,26 +43,28 @@ void BinBender::saveFile(const string& filename){
 string BinBender::loadFileAsStr(const string& filename){
     ifstream ifile = ifstream(filename, ios::in | ios::binary | ios::ate);
 
-    stringstream ss;
+    // stringstream ss;
+    string ss;
 
     if(ifile.is_open()){
-        ifstream::pos_type size = ifile.tellg();
+        size_t size = ifile.tellg();
         ifile.seekg(0, ios::beg);
 
-        bufferSize = 1024 * 1024;
-        unique_ptr<char[]> buffer (new char[bufferSize]);
+        bufferSize = 1024;
 
         if(size >= 1024*1024*1024){
-            bufferSize *= 4096;
+            bufferSize *= 1024;
         }
 
-        bufferings = size/bufferSize;
-        cout << "Amount of buffering... (" << bufferings << ")" << endl;
+        unique_ptr<char[]> buffer (new char[bufferSize]);
 
-        int n = size/(10*bufferSize);
+        bufferings = 0;
+
+        int n = (size/bufferSize)/10;
         int a = 0;
 
-        cout << "Starting loop!" << endl;
+        cout << "Loading [" << filename << "]";
+
         while(ifile){
             a++;
             if(a >= n){
@@ -80,13 +73,17 @@ string BinBender::loadFileAsStr(const string& filename){
             }
 
             ifile.read(buffer.get(), bufferSize);
-            ss << string(buffer.get(), bufferSize);
+            string x = string(buffer.get(), bufferSize);
+
+            // ss << x;
+            ss.append(x);
+            bufferings++;
+            // cout << "TOTAL SIZE... : " << bufferings*bufferSize << endl;
         }
 
         cout << endl;
-        cout << "Finished loop!" << endl;
 
-        return ss.str();
+        return ss;
     }
 
     return "";
