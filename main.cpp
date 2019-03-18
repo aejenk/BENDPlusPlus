@@ -24,15 +24,15 @@ void testhex() {
 
 void testbin() {
     BinBender bx;
-    bx.loadFile("skele.jpg");
+    bx.loadFile("GIGA.mp4");
     bx.mutate(10);
-    bx.saveFile("skele-bin.jpg");
+    bx.saveFile("GIGA-mut.mp4");
 }
 
 int main() {
     srand(time(0));
 
-    testhex();
+    // testhex();
     testbin();
 
     return 0;

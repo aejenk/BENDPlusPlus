@@ -1,2 +1,2 @@
 program:
-		g++ -o m main.cpp bin/binbend.cpp bin/hexbend.cpp bin/bender.cpp
+		g++ -o m main.cpp bin/binbend.cpp bin/hexbend.cpp
