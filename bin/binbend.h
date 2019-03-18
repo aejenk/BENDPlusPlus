@@ -13,6 +13,7 @@ using namespace std;
 class BinBender {
     public:
     string contents;
+    string backup;
     size_t bufferSize;
     int bufferings;
     void loadFile(const string& filename);

@@ -6,6 +6,7 @@ using namespace std;
 
 void BinBender::loadFile(const string& filename){
     contents = loadFileAsStr(filename);
+    backup += contents;
 }
 
 void BinBender::mutate(const int iter = 1){
@@ -26,7 +27,7 @@ void BinBender::saveFile(const string& filename){
 
     for(int i = 0; i < bufferings; i++){
         a++;
-        if(a >= bufferings/10){
+        if(a >= bufferings/15){
             cout << ".";
             a = 0;
         }
@@ -36,6 +37,8 @@ void BinBender::saveFile(const string& filename){
     }
 
     cout << endl;
+
+    contents.assign(backup);
 }
 
 // PRIVATE
@@ -60,7 +63,7 @@ string BinBender::loadFileAsStr(const string& filename){
 
         bufferings = 0;
 
-        int n = (size/bufferSize)/10;
+        int n = (size/bufferSize)/15;
         int a = 0;
 
         cout << "Loading [" << filename << "]";

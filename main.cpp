@@ -22,18 +22,22 @@ void testhex() {
     hx.saveFile("skele-hex.jpg");
 }
 
-void testbin() {
-    BinBender bx;
-    bx.loadFile("h.avi");
-    bx.mutate(100);
-    bx.saveFile("h-mut.avi");
+void testbin(BinBender bx, string name) {
+    // BinBender bx;
+    // bx.loadFile("h.avi");
+    bx.mutate(600);
+    bx.saveFile(name);
 }
 
 int main() {
     srand(time(0));
 
-    // testhex();
-    testbin();
+    BinBender bx;
+    bx.loadFile("blocks.avi");
+
+    for(int i = 0; i < 4; i++){
+        testbin(bx, "blocks" + to_string(i) + ".avi");
+    }
 
     return 0;
 }
