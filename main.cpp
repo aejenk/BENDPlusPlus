@@ -15,8 +15,8 @@ vector<string> strSplit(string s, char delimit){
     return seglist;
 }
 
-void bendfile(BinBender bx, string name) {
-    bx.mutate(1000, muts::SCATTER, true); // safely mutates 1000 bytes via SCATTERing
+void bendfile(BinBender bx, string name, muts mutation) {
+    bx.mutate(1000, mutation, true); // safely mutates 1000 bytes via SCATTERing
     bx.saveFile(name);
 }
 
@@ -36,8 +36,17 @@ int main() {
     bx.loadFile(name);
 
     for(int i = 0; i < 10; i++){
-        savename.insert(savename.find("."), to_string(i));
-        bendfile(bx, savename);
+        savename.insert(savename.find("."), to_string(i) + "-SCT");
+        bendfile(bx, savename, muts::SCATTER);
+        savename.assign(name);
+        savename.insert(savename.find("."), to_string(i) + "-CHK");
+        bendfile(bx, savename, muts::CHUNKS);
+        savename.assign(name);
+        savename.insert(savename.find("."), to_string(i) + "-REP");
+        bendfile(bx, savename, muts::REPEAT);
+        savename.assign(name);
+        savename.insert(savename.find("."), to_string(i) + "-REV");
+        bendfile(bx, savename, muts::REVERSE);
         savename.assign(name);
     }
 
