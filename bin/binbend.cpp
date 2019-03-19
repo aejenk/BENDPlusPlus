@@ -9,7 +9,7 @@ void BinBender::loadFile(const string& filename){
     backup += contents; // backs up file for later restoration
 }
 
-void BinBender::mutate(const int iter = 1, muts type, bool safe = false){
+void BinBender::mutate(const int iter, muts type, bool safe = false){
     unsigned long len = contents.length();
 
     // Randomly changes bits all around the file, hence "scattering" the corruption.
