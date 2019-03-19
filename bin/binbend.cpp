@@ -6,18 +6,18 @@ using namespace std;
 
 void BinBender::loadFile(const string& filename){
     contents = loadFileAsStr(filename);
-    backup += contents;
+    backup += contents; // backs up file for later restoration
 }
 
-void BinBender::mutate(const int iter = 1, muts type = muts::SCATTER){
+void BinBender::mutate(const int iter = 1, muts type, bool safe = false){
+    unsigned long len = contents.length();
 
     // Randomly changes bits all around the file, hence "scattering" the corruption.
     if(type == muts::SCATTER){
-        unsigned long len = contents.length();
-
         for(int i = 0; i < iter; i++){
-            size_t randi = (rand() % (len-safetymin));
-            randi += safetymin;
+            // If safe, offset random index to avoid header data.
+            // If unsafe, simply pick random index.
+            size_t randi = (safe) ? (rand() % (len-safetymin)) + safetymin : (rand() % len);
             contents[randi] = randomASCII();
         }
     }
@@ -38,11 +38,13 @@ void BinBender::mutate(const int iter = 1, muts type = muts::SCATTER){
 void BinBender::saveFile(const string& filename){
     cout << "Saving [" << filename << "]";
 
+    // Opens a file with [filename]
     ofstream ofile (filename, ios::out | ios::binary);
     char buffer[bufferSize];
 
     int a = 0;
 
+    // Buffers contents into file according to amount of buffers used to load file.
     for(int i = 0; i < bufferings; i++){
         a++;
         if(a >= bufferings/15){
@@ -56,6 +58,7 @@ void BinBender::saveFile(const string& filename){
 
     cout << endl;
 
+    // resets contents to backup
     contents.assign(backup);
 }
 

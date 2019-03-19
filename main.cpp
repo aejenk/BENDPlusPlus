@@ -16,7 +16,7 @@ vector<string> strSplit(string s, char delimit){
 }
 
 void bendfile(BinBender bx, string name) {
-    bx.mutate(1000);
+    bx.mutate(1000, muts::SCATTER, true); // safely mutates 1000 bytes via SCATTERing
     bx.saveFile(name);
 }
 

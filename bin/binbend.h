@@ -22,7 +22,7 @@ class BinBender {
     size_t safetymin;
     int bufferings;
     void loadFile(const string& filename);
-    void mutate(const int iter = 1, muts type = muts::SCATTER);
+    void mutate(const int iter = 1, muts type, bool safe = false);
     void saveFile(const string& filename);
 
     private:
