@@ -23,21 +23,26 @@ void testhex() {
 }
 
 void testbin(BinBender bx, string name) {
-    bx.mutate(600);
+    bx.mutate(10000);
     bx.saveFile(name);
 }
 
 int main() {
     srand(time(0));
 
-    string name = "sacrifgice.avi";
+    cout << "Enter filename: ";
+    string name;
+    cin >> name;
+
+    cout << endl;
+
     string savename;
     savename.assign(name);
 
     BinBender bx;
     bx.loadFile(name);
 
-    for(int i = 0; i < 40; i++){
+    for(int i = 0; i < 5; i++){
         savename.insert(savename.find("."), to_string(i));
         testbin(bx, savename);
         savename.assign(name);

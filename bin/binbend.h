@@ -15,6 +15,7 @@ class BinBender {
     string contents;
     string backup;
     size_t bufferSize;
+    size_t safetymin;
     int bufferings;
     void loadFile(const string& filename);
     void mutate(const int iter);

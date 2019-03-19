@@ -13,7 +13,9 @@ void BinBender::mutate(const int iter = 1){
     unsigned long len = contents.length();
 
     for(int i = 0; i < iter; i++){
-        contents[rand() % len] = randomASCII();
+        size_t randi = (rand() % (len-safetymin));
+        randi += safetymin;
+        contents[randi] = randomASCII();
     }
 }
 
@@ -85,6 +87,8 @@ string BinBender::loadFileAsStr(const string& filename){
         }
 
         cout << endl;
+
+        safetymin = size / 50;
 
         return ss;
     }
