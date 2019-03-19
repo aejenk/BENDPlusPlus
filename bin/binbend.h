@@ -16,16 +16,18 @@ enum class muts {
 
 class BinBender {
     public:
-    string contents;
-    string backup;
-    size_t bufferSize;
-    size_t safetymin;
-    int bufferings;
+    int chunksize = 1;
+    int repeats = 1;
     void loadFile(const string& filename);
     void mutate(const int iter, muts type, bool safe = false);
     void saveFile(const string& filename);
 
     private:
+    string contents;
+    string backup;
+    size_t bufferSize;
+    size_t safetymin;
+    int bufferings;
     string loadFileAsStr(const string& filename);
     char randomASCII();
 };

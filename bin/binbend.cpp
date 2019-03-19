@@ -12,13 +12,9 @@ void BinBender::loadFile(const string& filename){
 void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
     unsigned long len = contents.length();
 
-    // configvars
-    // will be swapped for an actual method of configuration later
-    int chunksize = 50;
-    int repeats = 5;
-
     // Randomly changes bits all around the file, hence "scattering" the corruption.
     if(type == muts::SCATTER){
+        cout << "Mutating [SCATTER]..." << endl;
         for(int i = 0; i < iter; i++){
             // If safe, offset random index to avoid header data.
             // If unsafe, simply pick random index.
@@ -28,6 +24,7 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
     }
     // Just like scatter, except it modifies N bytes every iteration rather than 1 byte.
     else if(type == muts::CHUNKS){
+        cout << "Mutating [CHUNKS]..." << endl;
         for(int i = 0; i < iter; i++){
             size_t randi = (safe) 
                 ? (rand() % (len-safetymin-chunksize)) + safetymin 
@@ -41,6 +38,7 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
     }
     // Repeats random sections of the file N times for every iteration.
     else if(type == muts::REPEAT){
+        cout << "Mutating [REPEAT]..." << endl;
         for(int i = 0; i < iter; i++){
             size_t randi = (safe) 
                     ? (rand() % (len-safetymin-(chunksize*repeats))) + safetymin 
@@ -57,6 +55,7 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
     }
     // Reverses random sections (of size N bytes) of the file M times.
     else if(type == muts::REVERSE){
+        cout << "Mutating [REVERSE]..." << endl;
         for(int i = 0; i < iter; i++){
             size_t randi = (safe) 
                     ? (rand() % (len-safetymin-chunksize)) + safetymin 

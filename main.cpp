@@ -16,7 +16,7 @@ vector<string> strSplit(string s, char delimit){
 }
 
 void bendfile(BinBender bx, string name, muts mutation) {
-    bx.mutate(1000, mutation, true); // safely mutates 1000 bytes via SCATTERing
+    bx.mutate(2, mutation, true); // safely mutates 1000 bytes via SCATTERing
     bx.saveFile(name);
 }
 
@@ -34,8 +34,10 @@ int main() {
 
     BinBender bx;
     bx.loadFile(name);
+    bx.chunksize = 3;
+    bx.repeats = 2;
 
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < 20; i++){
         savename.insert(savename.find("."), to_string(i) + "-SCT");
         bendfile(bx, savename, muts::SCATTER);
         savename.assign(name);
