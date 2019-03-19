@@ -15,15 +15,8 @@ vector<string> strSplit(string s, char delimit){
     return seglist;
 }
 
-void testhex() {
-    HexBender hx;
-    hx.loadFile("skele.jpg");
-    hx.mutate(10);
-    hx.saveFile("skele-hex.jpg");
-}
-
-void testbin(BinBender bx, string name) {
-    bx.mutate(10000);
+void bendfile(BinBender bx, string name) {
+    bx.mutate(1000);
     bx.saveFile(name);
 }
 
@@ -42,9 +35,9 @@ int main() {
     BinBender bx;
     bx.loadFile(name);
 
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < 10; i++){
         savename.insert(savename.find("."), to_string(i));
-        testbin(bx, savename);
+        bendfile(bx, savename);
         savename.assign(name);
     }
 

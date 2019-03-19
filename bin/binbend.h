@@ -10,6 +10,10 @@
 
 using namespace std;
 
+enum class muts {
+    SCATTER, CHUNKS, REPEAT, REVERSE
+};
+
 class BinBender {
     public:
     string contents;
@@ -18,7 +22,7 @@ class BinBender {
     size_t safetymin;
     int bufferings;
     void loadFile(const string& filename);
-    void mutate(const int iter);
+    void mutate(const int iter = 1, muts type = muts::SCATTER);
     void saveFile(const string& filename);
 
     private:

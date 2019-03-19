@@ -9,13 +9,29 @@ void BinBender::loadFile(const string& filename){
     backup += contents;
 }
 
-void BinBender::mutate(const int iter = 1){
-    unsigned long len = contents.length();
+void BinBender::mutate(const int iter = 1, muts type = muts::SCATTER){
 
-    for(int i = 0; i < iter; i++){
-        size_t randi = (rand() % (len-safetymin));
-        randi += safetymin;
-        contents[randi] = randomASCII();
+    // Randomly changes bits all around the file, hence "scattering" the corruption.
+    if(type == muts::SCATTER){
+        unsigned long len = contents.length();
+
+        for(int i = 0; i < iter; i++){
+            size_t randi = (rand() % (len-safetymin));
+            randi += safetymin;
+            contents[randi] = randomASCII();
+        }
+    }
+    // Just like scatter, except it modifies N bytes every iteration rather than 1 byte.
+    else if(type == muts::CHUNKS){
+
+    }
+    // Repeats random sections of the file N times for every iteration.
+    else if(type == muts::REPEAT){
+
+    }
+    // Reverses random sections (of size N bytes) of the file M times.
+    else if(type == muts::REVERSE){
+
     }
 }
 
