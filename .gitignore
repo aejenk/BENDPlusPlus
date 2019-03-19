@@ -1,6 +1,10 @@
-*.png
-*.jpeg
-*.jpg
-*.exe
-*.avi
-*.mp4
+*.png*
+*.jpeg*
+*.jpg*
+*.exe*
+*.avi*
+*.mp4*
+*.m2ts*
+*.gif*
+*.tif*
+*.mp3*
