@@ -132,6 +132,24 @@ void Mutation::mutmove(uniform_int_distribution<size_t> dist, const int iter, st
     }
 }
 
+void Mutation::mutzero(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+    int a = 0;
+    size_t rindex;
+
+    cout << "Mutating [ZERO]";
+        
+    for(int i = 0; i < iter; i++){
+        a++;
+        if(a >= iter/30){
+            cout << ".";
+            a = 0;
+        }
+
+        rindex = dist(generator);
+        contents[rindex] = 0x00;
+    }
+}
+
 char Mutation::randomASCII(){
     return static_cast<char>(rand() % 256);
 }

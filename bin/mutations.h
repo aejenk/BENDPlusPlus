@@ -1,13 +1,12 @@
-#include <random>
 #include <iostream>
-#include <random>
 #include <string>
 #include <algorithm>
+#include <random>
 
 using namespace std;
 
 enum class muts {
-    SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE
+    SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO
 };
 
 class Mutation {
@@ -20,5 +19,6 @@ class Mutation {
         void mutscatter(uniform_int_distribution<size_t> dist, const int iter, string& contents);
         void mutreverse(uniform_int_distribution<size_t> dist, const int iter, string& contents);
         void mutmove(uniform_int_distribution<size_t> dist, const int iter, string& contents);
+        void mutzero(uniform_int_distribution<size_t> dist, const int iter, string& contents);
         char randomASCII();
 };

@@ -17,7 +17,8 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
     size_t max;
 
     switch(type){
-        case muts::SCATTER : max = len;
+        case muts::SCATTER :
+        case muts::ZERO    : max = len;
         break;
         case muts::CHUNKS  :
         case muts::MOVE    :
@@ -37,6 +38,7 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
         case muts::REMOVE  :  mut.mutremove(dist, iter, contents, bufferings, removedBufs); break;
         case muts::REVERSE : mut.mutreverse(dist, iter, contents); break;
         case muts::REPEAT  :  mut.mutrepeat(dist, iter, contents); break;
+        case muts::ZERO    :    mut.mutzero(dist, iter, contents); break;
     }
 
     cout << endl;

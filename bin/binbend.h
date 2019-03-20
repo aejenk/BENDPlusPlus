@@ -5,8 +5,6 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <time.h>
-#include <random>
 #include "mutations.h"
 
 using namespace std;
@@ -30,7 +28,6 @@ class BinBender {
     int bufferings;
     int removedBufs = 0;
     string loadFileAsStr(const string& filename);
-    char randomASCII();
 
     // mutations
     // void mutchunks(uniform_int_distribution<size_t> dist, const int iter);
