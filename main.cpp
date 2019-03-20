@@ -1,5 +1,4 @@
 #include "bin/binbend.h"
-#include "bin/hexbend.h"
 
 using namespace std;
 
@@ -32,7 +31,7 @@ int main() {
 
     BinBender bx;
 
-    cin >> name >> bx.chunksize >> bx.repeats >> iters >> loops;
+    cin >> name >> bx.mut.chunksize >> bx.mut.repeats >> iters >> loops;
 
     cout << endl;
 
@@ -44,12 +43,12 @@ int main() {
 
     vector<pair<muts, string>> allmuts = 
         {
-            {muts::CHUNKS, "-CHK"},
+            // {muts::CHUNKS, "-CHK"},
             {muts::MOVE, "-MOV"},
             {muts::REMOVE, "-RMV"},
-            {muts::REPEAT, "-REP"},
-            {muts::REVERSE, "-REV"},
-            {muts::SCATTER, "-SCT"}
+            // {muts::REPEAT, "-REP"},
+            // {muts::REVERSE, "-REV"},
+            // {muts::SCATTER, "-SCT"}
         };
 
     for(int i = 0; i < loops; i++){

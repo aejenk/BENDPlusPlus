@@ -2,8 +2,6 @@
 
 using namespace std;
 
-std::default_random_engine generator;
-
 // PUBLIC
 
 void BinBender::loadFile(const string& filename){
@@ -13,7 +11,7 @@ void BinBender::loadFile(const string& filename){
 
 void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
     size_t len = contents.length();
-    size_t randi;
+    size_t rindex;
 
     size_t min = (safe) ? safetymin : 0;
     size_t max;
@@ -24,120 +22,21 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
         case muts::CHUNKS  :
         case muts::MOVE    :
         case muts::REMOVE  : 
-        case muts::REVERSE : max = len-chunksize;
+        case muts::REVERSE : max = len-mut.chunksize;
         break;
-        case muts::REPEAT  : max = len - (chunksize*repeats);
+        case muts::REPEAT  : max = len - (mut.chunksize*mut.repeats);
         break;
     }
 
-    uniform_int_distribution<size_t> distribution(min,max);
+    uniform_int_distribution<size_t> dist(min,max);
 
-    // cout << "Data modified per iteration: " << chunksize*repeats << "bytes" << endl;
-    // cout << "Minimum: " << min << ", Maximum: " << max << ", Length: " << len << endl;
-
-    int a = 0;
-
-    // Randomly changes bits all around the file, hence "scattering" the corruption.
-    if(type == muts::SCATTER){
-        cout << "Mutating [SCATTER]";
-        
-        for(int i = 0; i < iter; i++){
-            a++;
-            if(a >= iter/30){
-                cout << ".";
-                a = 0;
-            }
-
-            randi = distribution(generator);
-            contents[randi] = randomASCII();
-        }
-    }
-    // Just like scatter, except it modifies N bytes every iteration rather than 1 byte.
-    else if(type == muts::CHUNKS){
-        cout << "Mutating [CHUNKS]";
-        for(int i = 0; i < iter; i++){
-            a++;
-            if(a >= iter/30){
-                cout << ".";
-                a = 0;
-            }
-            
-            randi = distribution(generator);
-
-            for(int j = randi; j < chunksize+randi; j++){
-                contents[j] = randomASCII();
-            }
-        }
-
-    }
-    // Repeats random sections of the file N times for every iteration.
-    else if(type == muts::REPEAT){
-        cout << "Mutating [REPEAT]";
-        for(int i = 0; i < iter; i++){
-            a++;
-            if(a >= iter/30){
-                cout << ".";
-                a = 0;
-            }
-            randi = distribution(generator);
-            string randomchunk = contents.substr(randi, chunksize);
-            
-            for(int r = 0; r < repeats && randi+chunksize < len; r++){
-                randi += chunksize;
-                contents = contents.replace(randi, chunksize, randomchunk);
-            }
-        }
-        cout << endl;
-    }
-    // Reverses random sections (of size N bytes) of the file M times.
-    else if(type == muts::REVERSE){
-        cout << "Mutating [REVERSE]";
-        for(int i = 0; i < iter; i++){
-            a++;
-            if(a >= iter/30){
-                cout << ".";
-                a = 0;
-            }
-
-            randi = distribution(generator);
-
-            string chunk = contents.substr(randi, chunksize);
-            reverse(chunk.begin(), chunk.end());
-            contents = contents.replace(randi, chunksize, chunk);
-        }
-    }
-    else if(type == muts::REMOVE){
-        cout << "Mutating [REMOVE]";
-        for(int i = 0; i < iter; i++){
-            a++;
-            if(a >= iter/30){
-                cout << ".";
-                a = 0;
-            }
-
-            randi = distribution(generator);
-            contents.erase(randi, chunksize);
-            max -= chunksize;
-            bufferings--;
-            removedBufs++;
-            distribution = uniform_int_distribution<size_t>(min, max);
-        }
-    }
-    else if(type == muts::MOVE){
-        cout << "Mutating [MOVE]";
-        for(int i = 0; i < iter; i++){
-            a++;
-            if(a >= iter/30){
-                cout << ".";
-                a = 0;
-            }
-
-            randi = distribution(generator);
-            string sub = contents.substr(randi, chunksize);
-            contents.erase(randi, chunksize);
-            randi = distribution(generator);
-            contents.insert(randi, sub);
-        }
+    switch(type){
+        case muts::SCATTER : mut.mutscatter(dist, iter, contents); break;
+        case muts::CHUNKS  :  mut.mutchunks(dist, iter, contents); break;
+        case muts::MOVE    :    mut.mutmove(dist, iter, contents); break;
+        case muts::REMOVE  :  mut.mutremove(dist, iter, contents, bufferings, removedBufs); break;
+        case muts::REVERSE : mut.mutreverse(dist, iter, contents); break;
+        case muts::REPEAT  :  mut.mutrepeat(dist, iter, contents); break;
     }
 
     cout << endl;
@@ -223,8 +122,4 @@ string BinBender::loadFileAsStr(const string& filename){
     }
 
     return "";
-}
-
-char BinBender::randomASCII(){
-    return static_cast<char>(rand() % 256);
 }
