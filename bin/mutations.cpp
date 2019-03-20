@@ -1,18 +1,9 @@
 #include "mutations.h"
+#include "timetaker.cpp"
 
 std::default_random_engine generator;
 
 using namespace std;
-using namespace std::chrono;
-
-template<typename Function, typename... Args>
-void timeTaken(string fname, Function F, Args... args){
-    auto start = high_resolution_clock::now(); 
-    F(args...);
-    auto end = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(end - start); 
-    cout << "Time taken by ["  << fname << "] : " << duration.count() << "ms" << endl;
-}
 
 void Mutation::mutscatter(uniform_int_distribution<size_t> dist, const int iter, string& contents){
     int a = 0;
@@ -111,6 +102,7 @@ void Mutation::mutremove(uniform_int_distribution<size_t> dist, const int iter, 
 
         rindex = dist(generator);
         contents.erase(rindex, chunksize);
+
         max -= chunksize;
         bufs--;
         remBufs++;
@@ -131,8 +123,10 @@ void Mutation::mutmove(uniform_int_distribution<size_t> dist, const int iter, st
         }
 
         rindex = dist(generator);
+
         string sub = contents.substr(rindex, chunksize);
         contents.erase(rindex, chunksize);
+
         rindex = dist(generator);
         contents.insert(rindex, sub);
     }
