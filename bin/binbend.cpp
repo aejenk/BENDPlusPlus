@@ -21,14 +21,16 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
     switch(type){
         case muts::SCATTER : max = len;
         break;
-        case muts::CHUNKS  : 
+        case muts::CHUNKS  :
+        case muts::MOVE    :
+        case muts::REMOVE  : 
         case muts::REVERSE : max = len-chunksize;
         break;
         case muts::REPEAT  : max = len - (chunksize*repeats);
         break;
     }
 
-    std::uniform_int_distribution<size_t> distribution(min,max);
+    uniform_int_distribution<size_t> distribution(min,max);
 
     // cout << "Data modified per iteration: " << chunksize*repeats << "bytes" << endl;
     // cout << "Minimum: " << min << ", Maximum: " << max << ", Length: " << len << endl;
@@ -37,16 +39,29 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
 
     // Randomly changes bits all around the file, hence "scattering" the corruption.
     if(type == muts::SCATTER){
-        // cout << "Mutating [SCATTER]..." << endl;
+        cout << "Mutating [SCATTER]";
+        
         for(int i = 0; i < iter; i++){
+            a++;
+            if(a >= iter/30){
+                cout << ".";
+                a = 0;
+            }
+
             randi = distribution(generator);
             contents[randi] = randomASCII();
         }
     }
     // Just like scatter, except it modifies N bytes every iteration rather than 1 byte.
     else if(type == muts::CHUNKS){
-        // cout << "Mutating [CHUNKS]..." << endl;
+        cout << "Mutating [CHUNKS]";
         for(int i = 0; i < iter; i++){
+            a++;
+            if(a >= iter/30){
+                cout << ".";
+                a = 0;
+            }
+            
             randi = distribution(generator);
 
             for(int j = randi; j < chunksize+randi; j++){
@@ -60,7 +75,7 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
         cout << "Mutating [REPEAT]";
         for(int i = 0; i < iter; i++){
             a++;
-            if(a >= iter/15){
+            if(a >= iter/30){
                 cout << ".";
                 a = 0;
             }
@@ -76,8 +91,14 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
     }
     // Reverses random sections (of size N bytes) of the file M times.
     else if(type == muts::REVERSE){
-        // cout << "Mutating [REVERSE]..." << endl;
+        cout << "Mutating [REVERSE]";
         for(int i = 0; i < iter; i++){
+            a++;
+            if(a >= iter/30){
+                cout << ".";
+                a = 0;
+            }
+
             randi = distribution(generator);
 
             string chunk = contents.substr(randi, chunksize);
@@ -85,6 +106,41 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
             contents = contents.replace(randi, chunksize, chunk);
         }
     }
+    else if(type == muts::REMOVE){
+        cout << "Mutating [REMOVE]";
+        for(int i = 0; i < iter; i++){
+            a++;
+            if(a >= iter/30){
+                cout << ".";
+                a = 0;
+            }
+
+            randi = distribution(generator);
+            contents.erase(randi, chunksize);
+            max -= chunksize;
+            bufferings--;
+            removedBufs++;
+            distribution = uniform_int_distribution<size_t>(min, max);
+        }
+    }
+    else if(type == muts::MOVE){
+        cout << "Mutating [MOVE]";
+        for(int i = 0; i < iter; i++){
+            a++;
+            if(a >= iter/30){
+                cout << ".";
+                a = 0;
+            }
+
+            randi = distribution(generator);
+            string sub = contents.substr(randi, chunksize);
+            contents.erase(randi, chunksize);
+            randi = distribution(generator);
+            contents.insert(randi, sub);
+        }
+    }
+
+    cout << endl;
 }
 
 void BinBender::saveFile(const string& filename){
@@ -99,7 +155,7 @@ void BinBender::saveFile(const string& filename){
     // Buffers contents into file according to amount of buffers used to load file.
     for(int i = 0; i < bufferings; i++){
         a++;
-        if(a >= bufferings/15){
+        if(a >= bufferings/30){
             cout << ".";
             a = 0;
         }
@@ -112,6 +168,8 @@ void BinBender::saveFile(const string& filename){
 
     // resets contents to backup
     contents.assign(backup);
+    bufferings += removedBufs;
+    removedBufs = 0;
 }
 
 // PRIVATE
@@ -136,7 +194,7 @@ string BinBender::loadFileAsStr(const string& filename){
 
         bufferings = 0;
 
-        int n = (size/bufferSize)/15;
+        int n = (size/bufferSize)/30;
         int a = 0;
 
         cout << "Loading [" << filename << "]";

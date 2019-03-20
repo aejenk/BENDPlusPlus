@@ -11,7 +11,7 @@
 using namespace std;
 
 enum class muts {
-    SCATTER, CHUNKS, REPEAT, REVERSE
+    SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE
 };
 
 class BinBender {
@@ -28,6 +28,7 @@ class BinBender {
     size_t bufferSize;
     size_t safetymin;
     int bufferings;
+    int removedBufs = 0;
     string loadFileAsStr(const string& filename);
     char randomASCII();
 };

@@ -42,19 +42,22 @@ int main() {
     // bx.chunksize = 100;
     // bx.repeats = 5;
 
+    vector<pair<muts, string>> allmuts = 
+        {
+            {muts::CHUNKS, "-CHK"},
+            {muts::MOVE, "-MOV"},
+            {muts::REMOVE, "-RMV"},
+            {muts::REPEAT, "-REP"},
+            {muts::REVERSE, "-REV"},
+            {muts::SCATTER, "-SCT"}
+        };
+
     for(int i = 0; i < loops; i++){
-        savename.insert(savename.find("."), to_string(i) + "-SCT");
-        bendfile(bx, savename, muts::SCATTER, iters);
-        savename.assign(name);
-        savename.insert(savename.find("."), to_string(i) + "-CHK");
-        bendfile(bx, savename, muts::CHUNKS, iters);
-        savename.assign(name);
-        savename.insert(savename.find("."), to_string(i) + "-REV");
-        bendfile(bx, savename, muts::REVERSE, iters);
-        savename.assign(name);
-        savename.insert(savename.find("."), to_string(i) + "-REP");
-        bendfile(bx, savename, muts::REPEAT, iters);
-        savename.assign(name);
+        for(auto mut: allmuts){
+            savename.insert(savename.find("."), to_string(i) + mut.second);
+            bendfile(bx, savename, mut.first, iters);
+            savename.assign(name);
+        }
     }
 
     return 0;
