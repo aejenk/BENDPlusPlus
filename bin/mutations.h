@@ -6,7 +6,7 @@
 using namespace std;
 
 enum class muts {
-    SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO
+    SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO, SWAP, ISWAP
 };
 
 class Mutation {
@@ -20,5 +20,7 @@ class Mutation {
         void mutreverse(uniform_int_distribution<size_t> dist, const int iter, string& contents);
         void mutmove(uniform_int_distribution<size_t> dist, const int iter, string& contents);
         void mutzero(uniform_int_distribution<size_t> dist, const int iter, string& contents);
+        void mutswap(uniform_int_distribution<size_t> dist, const int iter, string& contents);
+        void mutiswap(uniform_int_distribution<size_t> dist, const int iter, string& contents);
         char randomASCII();
 };

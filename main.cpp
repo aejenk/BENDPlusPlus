@@ -43,13 +43,15 @@ int main() {
 
     vector<pair<muts, string>> allmuts = 
         {
-            {muts::CHUNKS, "-CHK"},
+            // {muts::CHUNKS, "-CHK"},
             {muts::MOVE, "-MOV"},
             {muts::REMOVE, "-RMV"},
-            {muts::ZERO, "-000"},
-            {muts::REPEAT, "-REP"},
-            {muts::REVERSE, "-REV"},
-            {muts::SCATTER, "-SCT"}
+            // {muts::ZERO, "-ZER"},
+            // {muts::REPEAT, "-REP"},
+            // {muts::REVERSE, "-REV"},
+            // {muts::SCATTER, "-SCT"},
+            {muts::SWAP, "-SWP"},
+            {muts::ISWAP, "-IWP"}
         };
 
     for(int i = 0; i < loops; i++){

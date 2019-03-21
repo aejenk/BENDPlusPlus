@@ -1,4 +1,5 @@
 #include "binbend.h"
+#include "timetaker.cpp"
 
 using namespace std;
 
@@ -23,6 +24,8 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
         case muts::CHUNKS  :
         case muts::MOVE    :
         case muts::REMOVE  : 
+        case muts::SWAP    :
+        case muts::ISWAP   :
         case muts::REVERSE : max = len-mut.chunksize;
         break;
         case muts::REPEAT  : max = len - (mut.chunksize*mut.repeats);
@@ -31,14 +34,17 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
 
     uniform_int_distribution<size_t> dist(min,max);
 
+    // switch with time calculations.
     switch(type){
-        case muts::SCATTER : mut.mutscatter(dist, iter, contents); break;
-        case muts::CHUNKS  :  mut.mutchunks(dist, iter, contents); break;
-        case muts::MOVE    :    mut.mutmove(dist, iter, contents); break;
-        case muts::REMOVE  :  mut.mutremove(dist, iter, contents, bufferings, removedBufs); break;
-        case muts::REVERSE : mut.mutreverse(dist, iter, contents); break;
-        case muts::REPEAT  :  mut.mutrepeat(dist, iter, contents); break;
-        case muts::ZERO    :    mut.mutzero(dist, iter, contents); break;
+        case muts::SCATTER : takeTimeWithoutReturn("SCT", mut.mutscatter(dist, iter, contents)); break;
+        case muts::CHUNKS  :  takeTimeWithoutReturn("CHKS", mut.mutchunks(dist, iter, contents)); break;
+        case muts::MOVE    :    takeTimeWithoutReturn("MOV", mut.mutmove(dist, iter, contents)); break;
+        case muts::REMOVE  :  takeTimeWithoutReturn("REM", mut.mutremove(dist, iter, contents, bufferings, removedBufs)); break;
+        case muts::REVERSE : takeTimeWithoutReturn("REV", mut.mutreverse(dist, iter, contents)); break;
+        case muts::REPEAT  :  takeTimeWithoutReturn("REP", mut.mutrepeat(dist, iter, contents)); break;
+        case muts::ZERO    :    takeTimeWithoutReturn("ZER", mut.mutzero(dist, iter, contents)); break;
+        case muts::SWAP    :    takeTimeWithoutReturn("SWP", mut.mutswap(dist, iter, contents)); break;
+        case muts::ISWAP   :   takeTimeWithoutReturn("IWP", mut.mutiswap(dist, iter, contents)); break;
     }
 
     cout << endl;

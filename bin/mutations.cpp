@@ -132,6 +132,27 @@ void Mutation::mutmove(uniform_int_distribution<size_t> dist, const int iter, st
     }
 }
 
+void Mutation::mutiswap(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+    int a = 0;
+    size_t rbegin;
+    size_t rbegin2;
+    size_t rend;
+
+    cout << "Mutating [MOVE]";
+    for(int i = 0; i < iter; i++){
+        a++;
+        if(a >= iter/30){
+            cout << ".";
+            a = 0;
+        }
+
+        rbegin = dist(generator);
+        rend = rbegin + chunksize;
+
+        swap_ranges(contents.begin()+rbegin, contents.begin()+rend, contents.begin()+rbegin2);
+    }
+}
+
 void Mutation::mutzero(uniform_int_distribution<size_t> dist, const int iter, string& contents){
     int a = 0;
     size_t rindex;
@@ -147,6 +168,30 @@ void Mutation::mutzero(uniform_int_distribution<size_t> dist, const int iter, st
 
         rindex = dist(generator);
         contents[rindex] = 0x00;
+    }
+}
+
+void Mutation::mutswap(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+    int a = 0;
+    size_t rindex1;
+    size_t rindex2;
+    
+    cout << "Mutating [SWAP]";
+
+    for(int i = 0; i < iter; i++){
+        a++;
+        if(a >= iter/30){
+            cout << ".";
+            a = 0;
+        }
+
+        rindex1 = dist(generator);
+        rindex2 = dist(generator);
+        string sub1 = contents.substr(rindex1, chunksize);
+        string sub2 = contents.substr(rindex2, chunksize); 
+
+        contents.replace(rindex1, chunksize, sub2);
+        contents.replace(rindex2, chunksize, sub1);
     }
 }
 
