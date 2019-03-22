@@ -13,23 +13,19 @@ class Mutation {
     public:
         size_t chunksize = 1;
         size_t repeats = 1;
-        void mutchunks(uniform_int_distribution<size_t> dist, const int iter, string& contents);
+        void mutate(muts mutation, size_t safetybuf, int iterations, string& contents);
 
-        void mutrepeat(uniform_int_distribution<size_t> dist, const int iter, string& contents);
-
-        void mutremove(uniform_int_distribution<size_t> dist, const int iter, string& contents);
-
-        void mutscatter(uniform_int_distribution<size_t> dist, const int iter, string& contents);
-
-        void mutreverse(uniform_int_distribution<size_t> dist, const int iter, string& contents);
-
-        void mutmove(uniform_int_distribution<size_t> dist, const int iter, string& contents);
-
-        void mutzero(uniform_int_distribution<size_t> dist, const int iter, string& contents);
-
-        void mutswap(uniform_int_distribution<size_t> dist, const int iter, string& contents);
-
-        void mutiswap(uniform_int_distribution<size_t> dist, const int iter, string& contents);
-
+    private:
+        uniform_int_distribution<size_t> dist;
+        int iter;
+        void mutchunks(string& contents);
+        void mutrepeat(string& contents);
+        void mutremove(string& contents);
+        void mutscatter(string& contents);
+        void mutreverse(string& contents);
+        void mutmove(string& contents);
+        void mutzero(string& contents);
+        void mutswap(string& contents);
+        void mutiswap(string& contents);
         char randomASCII();
 };

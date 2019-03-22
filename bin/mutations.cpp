@@ -5,7 +5,45 @@ std::default_random_engine generator;
 
 using namespace std;
 
-void Mutation::mutscatter(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+void Mutation::mutate(muts mutation, size_t safetybuf, int iterations, string& contents){
+    size_t len = contents.length();
+    size_t rindex;
+
+    iter = iterations;
+
+    size_t min = safetybuf;
+    size_t max;
+
+    switch(mutation){
+        case muts::SCATTER :
+        case muts::ZERO    : max = len; break;
+        case muts::CHUNKS  :
+        case muts::MOVE    :
+        case muts::REMOVE  :
+        case muts::SWAP    :
+        case muts::ISWAP   :
+        case muts::REVERSE : max = len-chunksize; break;
+        case muts::REPEAT  : max = len - (chunksize*repeats); break;
+    }
+
+    dist = uniform_int_distribution<size_t>(min,max);
+       // switch with time calculations.
+    switch(mutation){
+        case muts::SCATTER :  takeTimeWithoutReturn("SCT", mutscatter(contents)); break;
+        case muts::CHUNKS  :  takeTimeWithoutReturn("CHKS", mutchunks(contents)); break;
+        case muts::MOVE    :     takeTimeWithoutReturn("MOV", mutmove(contents)); break;
+        case muts::REMOVE  :   takeTimeWithoutReturn("REM", mutremove(contents)); break;
+        case muts::REVERSE :  takeTimeWithoutReturn("REV", mutreverse(contents)); break;
+        case muts::REPEAT  :   takeTimeWithoutReturn("REP", mutrepeat(contents)); break;
+        case muts::ZERO    :     takeTimeWithoutReturn("ZER", mutzero(contents)); break;
+        case muts::SWAP    :     takeTimeWithoutReturn("SWP", mutswap(contents)); break;
+        case muts::ISWAP   :    takeTimeWithoutReturn("IWP", mutiswap(contents)); break;
+    }
+
+    cout << endl;
+}
+
+void Mutation::mutscatter(string& contents){
     int a = 0;
     size_t rindex;
 
@@ -23,7 +61,7 @@ void Mutation::mutscatter(uniform_int_distribution<size_t> dist, const int iter,
     }
 }
 
-void Mutation::mutchunks(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+void Mutation::mutchunks(string& contents){
     int a = 0;
     size_t rindex;
 
@@ -43,7 +81,7 @@ void Mutation::mutchunks(uniform_int_distribution<size_t> dist, const int iter, 
     }
 }
 
-void Mutation::mutrepeat(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+void Mutation::mutrepeat(string& contents){
     int a = 0;
     int len = contents.length();
     size_t rindex;
@@ -65,7 +103,7 @@ void Mutation::mutrepeat(uniform_int_distribution<size_t> dist, const int iter, 
     }
 }
 
-void Mutation::mutreverse(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+void Mutation::mutreverse(string& contents){
     int a = 0;
     size_t rindex;
 
@@ -85,7 +123,7 @@ void Mutation::mutreverse(uniform_int_distribution<size_t> dist, const int iter,
     }
 }
 
-void Mutation::mutremove(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+void Mutation::mutremove(string& contents){
     int a = 0;
     size_t rindex;
 
@@ -108,7 +146,7 @@ void Mutation::mutremove(uniform_int_distribution<size_t> dist, const int iter, 
     }
 }
 
-void Mutation::mutmove(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+void Mutation::mutmove(string& contents){
     int a = 0;
     size_t rindex;
 
@@ -130,7 +168,7 @@ void Mutation::mutmove(uniform_int_distribution<size_t> dist, const int iter, st
     }
 }
 
-void Mutation::mutiswap(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+void Mutation::mutiswap(string& contents){
     int a = 0;
     size_t rbegin;
     size_t rbegin2;
@@ -152,7 +190,7 @@ void Mutation::mutiswap(uniform_int_distribution<size_t> dist, const int iter, s
     }
 }
 
-void Mutation::mutzero(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+void Mutation::mutzero(string& contents){
     int a = 0;
     size_t rindex;
 
@@ -170,7 +208,7 @@ void Mutation::mutzero(uniform_int_distribution<size_t> dist, const int iter, st
     }
 }
 
-void Mutation::mutswap(uniform_int_distribution<size_t> dist, const int iter, string& contents){
+void Mutation::mutswap(string& contents){
     int a = 0;
     size_t rindex1;
     size_t rindex2;
