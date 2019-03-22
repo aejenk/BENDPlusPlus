@@ -19,38 +19,36 @@ void BinBender::mutate(const int iter, muts type, bool safe /*= false*/){
 
     switch(type){
         case muts::SCATTER :
-        case muts::ZERO    : max = len;
-        break;
+        case muts::ZERO    : max = len; break;
         case muts::CHUNKS  :
         case muts::MOVE    :
-        case muts::REMOVE  : 
+        case muts::REMOVE  :
         case muts::SWAP    :
         case muts::ISWAP   :
-        case muts::REVERSE : max = len-mut.chunksize;
-        break;
-        case muts::REPEAT  : max = len - (mut.chunksize*mut.repeats);
-        break;
+        case muts::REVERSE : max = len-mut.chunksize; break;
+        case muts::REPEAT  : max = len - (mut.chunksize*mut.repeats); break;
     }
 
     uniform_int_distribution<size_t> dist(min,max);
 
     // switch with time calculations.
     switch(type){
-        case muts::SCATTER : takeTimeWithoutReturn("SCT", mut.mutscatter(dist, iter, contents)); break;
+        case muts::SCATTER :  takeTimeWithoutReturn("SCT", mut.mutscatter(dist, iter, contents)); break;
         case muts::CHUNKS  :  takeTimeWithoutReturn("CHKS", mut.mutchunks(dist, iter, contents)); break;
-        case muts::MOVE    :    takeTimeWithoutReturn("MOV", mut.mutmove(dist, iter, contents)); break;
-        case muts::REMOVE  :  takeTimeWithoutReturn("REM", mut.mutremove(dist, iter, contents, bufferings, removedBufs)); break;
-        case muts::REVERSE : takeTimeWithoutReturn("REV", mut.mutreverse(dist, iter, contents)); break;
-        case muts::REPEAT  :  takeTimeWithoutReturn("REP", mut.mutrepeat(dist, iter, contents)); break;
-        case muts::ZERO    :    takeTimeWithoutReturn("ZER", mut.mutzero(dist, iter, contents)); break;
-        case muts::SWAP    :    takeTimeWithoutReturn("SWP", mut.mutswap(dist, iter, contents)); break;
-        case muts::ISWAP   :   takeTimeWithoutReturn("IWP", mut.mutiswap(dist, iter, contents)); break;
+        case muts::MOVE    :     takeTimeWithoutReturn("MOV", mut.mutmove(dist, iter, contents)); break;
+        case muts::REMOVE  :   takeTimeWithoutReturn("REM", mut.mutremove(dist, iter, contents)); break;
+        case muts::REVERSE :  takeTimeWithoutReturn("REV", mut.mutreverse(dist, iter, contents)); break;
+        case muts::REPEAT  :   takeTimeWithoutReturn("REP", mut.mutrepeat(dist, iter, contents)); break;
+        case muts::ZERO    :     takeTimeWithoutReturn("ZER", mut.mutzero(dist, iter, contents)); break;
+        case muts::SWAP    :     takeTimeWithoutReturn("SWP", mut.mutswap(dist, iter, contents)); break;
+        case muts::ISWAP   :    takeTimeWithoutReturn("IWP", mut.mutiswap(dist, iter, contents)); break;
     }
 
     cout << endl;
 }
 
 void BinBender::saveFile(const string& filename){
+    // cout << "Total bufferings - Bufferings: " << bufferings << ", removedBufs: " << removedBufs << ", size: " << contents.size() << ", total!: " << bufferings*bufferSize << endl;
     cout << "Saving [" << filename << "]";
 
     // Opens a file with [filename]
@@ -59,24 +57,23 @@ void BinBender::saveFile(const string& filename){
 
     int a = 0;
 
+    size_t filesize = contents.size();
+
     // Buffers contents into file according to amount of buffers used to load file.
-    for(int i = 0; i < bufferings; i++){
+    for(int i = 0; (i*bufferSize) < filesize; i++){
         a++;
-        if(a >= bufferings/30){
+        if(a >= (filesize/(bufferSize*30))){
             cout << ".";
             a = 0;
         }
-
         string bufferstr = contents.substr(i*bufferSize, bufferSize);
         ofile << bufferstr;
     }
 
-    cout << endl;
+    // cout << endl;
 
     // resets contents to backup
     contents.assign(backup);
-    bufferings += removedBufs;
-    removedBufs = 0;
 }
 
 // PRIVATE
@@ -99,8 +96,6 @@ string BinBender::loadFileAsStr(const string& filename){
 
         unique_ptr<char[]> buffer (new char[bufferSize]);
 
-        bufferings = 0;
-
         int n = (size/bufferSize)/30;
         int a = 0;
 
@@ -118,11 +113,10 @@ string BinBender::loadFileAsStr(const string& filename){
 
             // ss << x;
             ss.append(x);
-            bufferings++;
             // cout << "TOTAL SIZE... : " << bufferings*bufferSize << endl;
         }
 
-        cout << endl;
+        // cout << endl;
 
         safetymin = size / 50;
 

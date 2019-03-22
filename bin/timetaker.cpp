@@ -1,6 +1,7 @@
 #include <string>
 #include <chrono>
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 using namespace std::chrono;
@@ -17,8 +18,8 @@ auto time_calculate_return(string fname, F l) -> decltype(l()){
     auto start = high_resolution_clock::now();
     auto ret = l();
     auto end = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(end - start); 
-    cout << "Time taken by ["  << fname << "] : " << duration.count() << endl;
+    duration<float> diff = end-start;
+    cout << "Time taken by ["  << fname << "] : " << diff.count() << "s";
     return ret;
 }
 
@@ -27,8 +28,8 @@ auto time_calculate_void(string fname, F l) -> void {
     auto start = high_resolution_clock::now();
     l();
     auto end = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(end - start); 
-    cout << "Time taken by ["  << fname << "] : " << duration.count() << endl;
+    duration<float> diff = end-start;
+    cout << "Time taken by ["  << fname << "] : " << diff.count() << "s";
 }
 
 /*

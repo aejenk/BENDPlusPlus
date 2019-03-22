@@ -85,7 +85,7 @@ void Mutation::mutreverse(uniform_int_distribution<size_t> dist, const int iter,
     }
 }
 
-void Mutation::mutremove(uniform_int_distribution<size_t> dist, const int iter, string& contents, int& bufs, int &remBufs){
+void Mutation::mutremove(uniform_int_distribution<size_t> dist, const int iter, string& contents){
     int a = 0;
     size_t rindex;
 
@@ -104,8 +104,6 @@ void Mutation::mutremove(uniform_int_distribution<size_t> dist, const int iter, 
         contents.erase(rindex, chunksize);
 
         max -= chunksize;
-        bufs--;
-        remBufs++;
         dist = uniform_int_distribution<size_t>(min, max);
     }
 }
@@ -138,7 +136,7 @@ void Mutation::mutiswap(uniform_int_distribution<size_t> dist, const int iter, s
     size_t rbegin2;
     size_t rend;
 
-    cout << "Mutating [MOVE]";
+    cout << "Mutating [ISWAP]";
     for(int i = 0; i < iter; i++){
         a++;
         if(a >= iter/30){
@@ -147,6 +145,7 @@ void Mutation::mutiswap(uniform_int_distribution<size_t> dist, const int iter, s
         }
 
         rbegin = dist(generator);
+        rbegin2 = dist(generator);
         rend = rbegin + chunksize;
 
         swap_ranges(contents.begin()+rbegin, contents.begin()+rend, contents.begin()+rbegin2);

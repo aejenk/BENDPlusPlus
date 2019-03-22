@@ -9,10 +9,6 @@
 
 using namespace std;
 
-// enum class muts {
-//     SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE
-// };
-
 class BinBender {
     public:
     Mutation mut;
@@ -25,8 +21,6 @@ class BinBender {
     string backup;
     size_t bufferSize;
     size_t safetymin;
-    int bufferings;
-    int removedBufs = 0;
     string loadFileAsStr(const string& filename);
 
     // mutations
