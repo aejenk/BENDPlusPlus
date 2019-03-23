@@ -75,15 +75,6 @@ int main() {
     long iters       = options.GetInteger("Bender Options", "iterations", 1);
     long loops       = options.GetInteger("Bender Options", "loops", 1); 
 
-    // Manual option input using standard in
-    // Kept for legacy, may be removed or used as replacement if no options.ini is found.
-    // cout << "Enter filename, chunk size, repeats, iter, and loops: ";
-    // cin >> name >> bx.mut.chunksize >> bx.mut.repeats >> iters >> loops;
-    // cout << "Enter modes (seperated by space): " ;
-    // cin.ignore(256, '\n');
-    // std::getline(std::cin, smodes); 
-    // cout << endl;
-
     // Reads options from ini file
     cout << endl;
     cout << setfill('-') << setw(40) << "\n";
