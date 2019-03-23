@@ -1,5 +1,6 @@
 #include "bin/binbend.h"
 #include "bin/timetaker.cpp"
+#include "lib/inih/INIReader.h"
 
 using namespace std;
 
@@ -35,9 +36,6 @@ void bendfile(BinBender bx, string name, muts mutation, int iters) {
 }
 
 int main() {
-    srand(time(0));
-
-    cout << "Enter filename, chunk size, repeats, iter, and loops: ";
     string name;
     string smodes;
     int iters;
@@ -47,11 +45,40 @@ int main() {
 
     BinBender bx;
 
-    cin >> name >> bx.mut.chunksize >> bx.mut.repeats >> iters >> loops;
-    cout << "Enter modes (seperated by space): " ;
-    cin.ignore(256, '\n');
-    std::getline(std::cin, smodes); 
+    INIReader options ("options.ini");
+
+    if (options.ParseError() != 0) {
+        std::cout << "Can't find 'options.ini'. Please create one.\n";
+        return 1;
+    }
+
+    name             = options.Get("Bender Options", "filename", "NO FILE");
+    smodes           = options.Get("Bender Options", "modes", "NO MODE");
+    bx.mut.chunksize = options.GetInteger("Bender Options", "chunksize", 1);
+    bx.mut.repeats   = options.GetInteger("Bender Options", "repeats", 1);
+    iters            = options.GetInteger("Bender Options", "iterations", 1);
+    loops            = options.GetInteger("Bender Options", "loops", 1); 
+
+    // Manual option input using standard in
+    // Kept for legacy, may be removed or used as replacement if no options.ini is found.
+    // cout << "Enter filename, chunk size, repeats, iter, and loops: ";
+    // cin >> name >> bx.mut.chunksize >> bx.mut.repeats >> iters >> loops;
+    // cout << "Enter modes (seperated by space): " ;
+    // cin.ignore(256, '\n');
+    // std::getline(std::cin, smodes); 
+    // cout << endl;
+
+    // Reads options from ini file
     cout << endl;
+    cout << setfill('-') << setw(40) << "\n";
+    cout << "Bender initalized with parameters:" << endl
+         << "Name      : " << name << endl
+         << "Modes     : " << smodes << endl
+         << "Chunksize : " << bx.mut.chunksize << endl
+         << "Repeats   : " << bx.mut.repeats << endl
+         << "Iterations: " << iters << endl
+         << "Loops     : " << loops << endl;
+    cout << setfill('-') << setw(40) << "\n";
 
     savename.assign(name);
     takeTimeWithoutReturn("LOADING", bx.loadFile(name));
