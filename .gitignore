@@ -8,5 +8,8 @@
 *.gif*
 *.tif*
 *.mp3*
+*.mkv*
+*.m4v*
+*.webm*
 
 files/
