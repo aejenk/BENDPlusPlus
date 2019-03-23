@@ -29,6 +29,30 @@ vector<string> strSplit(string s, char delimit){
     return seglist;
 }
 
+vector<pair<muts, string>> parsemodes (string smodes) {
+    vector<string> vmodes = strSplit(smodes, ' ');
+
+    vector<pair<muts, string>> modes;
+
+    for(string mode: vmodes){
+        if(mode == "CHUNK") modes.push_back({muts::CHUNKS, "-CHK"});
+        else if(mode == "ZERO") modes.push_back({muts::ZERO, "-ZER"});
+        else if(mode == "REPEAT") modes.push_back({muts::REPEAT, "-REP"});
+        else if(mode == "REVERSE") modes.push_back({muts::REVERSE, "-REV"});
+        else if(mode == "SCATTER") modes.push_back({muts::SCATTER, "-SCT"});
+        else if(mode == "SWAP") modes.push_back({muts::SWAP, "-SWP"});
+        else if(mode == "ISWAP") modes.push_back({muts::ISWAP, "-ISP"});
+        else if(mode == "MOVE") modes.push_back({muts::MOVE, "-MOV"});
+        else if(mode == "REMOVE") modes.push_back({muts::REMOVE, "-RMV"});
+        else if(mode == "ALL"){
+            modes = allmodes;
+            break;
+        }
+    }
+
+    return modes;
+}
+
 void bendfile(BinBender bx, string name, muts mutation, int iters) {
     bx.mutate(iters, mutation, true); // safely mutates 1000 bytes via SCATTERing
     takeTimeWithoutReturn("SAVING", bx.saveFile(name));
@@ -84,26 +108,7 @@ int main() {
     takeTimeWithoutReturn("LOADING", bx.loadFile(name));
     cout << endl;
 
-    vector<string> vmodes = strSplit(smodes, ' ');
-
-    vector<pair<muts, string>> modes;
-
-    for(string mode: vmodes){
-        if(mode == "CHUNK") modes.push_back({muts::CHUNKS, "-CHK"});
-        else if(mode == "ZERO") modes.push_back({muts::ZERO, "-ZER"});
-        else if(mode == "REPEAT") modes.push_back({muts::REPEAT, "-REP"});
-        else if(mode == "REVERSE") modes.push_back({muts::REVERSE, "-REV"});
-        else if(mode == "SCATTER") modes.push_back({muts::SCATTER, "-SCT"});
-        else if(mode == "SWAP") modes.push_back({muts::SWAP, "-SWP"});
-        else if(mode == "ISWAP") modes.push_back({muts::ISWAP, "-ISP"});
-        else if(mode == "MOVE") modes.push_back({muts::MOVE, "-MOV"});
-        else if(mode == "REMOVE") modes.push_back({muts::REMOVE, "-RMV"});
-        else if(mode == "ALL"){
-            modes.clear();
-            modes = allmodes;
-            break;
-        }
-    }
+    vector<pair<muts, string>> modes = parsemodes(smodes);
 
     for(int i = 0; i < loops; i++){
         for(auto mut: modes){
