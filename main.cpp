@@ -60,15 +60,7 @@ void bendfile(BinBender bx, string name, muts mutation, int iters) {
 }
 
 int main() {
-    string name;
-    string smodes;
-    int iters;
-    int loops;
-
-    string savename;
-
     BinBender bx;
-
     INIReader options ("options.ini");
 
     if (options.ParseError() != 0) {
@@ -76,12 +68,12 @@ int main() {
         return 1;
     }
 
-    name             = options.Get("Bender Options", "filename", "NO FILE");
-    smodes           = options.Get("Bender Options", "modes", "NO MODE");
+    string name      = options.Get("Bender Options", "filename", "NO FILE");
+    string smodes    = options.Get("Bender Options", "modes", "NO MODE");
     bx.mut.chunksize = options.GetInteger("Bender Options", "chunksize", 1);
     bx.mut.repeats   = options.GetInteger("Bender Options", "repeats", 1);
-    iters            = options.GetInteger("Bender Options", "iterations", 1);
-    loops            = options.GetInteger("Bender Options", "loops", 1); 
+    long iters       = options.GetInteger("Bender Options", "iterations", 1);
+    long loops       = options.GetInteger("Bender Options", "loops", 1); 
 
     // Manual option input using standard in
     // Kept for legacy, may be removed or used as replacement if no options.ini is found.
@@ -104,6 +96,7 @@ int main() {
          << "Loops     : " << loops << endl;
     cout << setfill('-') << setw(40) << "\n";
 
+    string savename;
     savename.assign(name);
     takeTimeWithoutReturn("LOADING", bx.loadFile(name));
     cout << endl;
