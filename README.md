@@ -1,16 +1,32 @@
 # BENDPlusPlus
-A databender made in C++. A work in progress that might not be too functional...
+A databender made in C++. Made to be fast, effective, full of features, and easy to use.
 
-## Progress
-There are two objects, `BinBender` and `HexBender`.
+## Downloading source
+Due to a dependency on a repository called `inith`, the actual command to be able to work on this is:
 
-`HexBender` works by converting the file into hexadecimal, and manipulating the hex code, then saving it back into a binary file. For now, it offers no benefits other than being able to manipulate the data in a more usable hex format.
+`git clone --recursive <URL-TO-THIS-REPO>`
 
-`BinBender` works by loading the file and manipulating it directly. This results in a *bender* that is **12 times faster** than the `HexBender`. However, the data is far less easy to manipulate structurally, since it's all garbage characters rather than hexadecimal - however considering the purpose is to ***bend***, that is hardly an issue.
+Otherwise `inith` won't download and hence it won't compile.
 
-`BinBender` also saves/loads files using custom buffers. For files under 1GB, the buffer size is 1KB (Max of 1,000,000 buffer runs), and for over the buffer size increases to 1MB (>1,000 buffer runs). These buffer numbers may change/be more flexible in the future via configurations.
+## Modes
+So far there are multiple modes. Not all modes are built the same however, due to differences in how they work, some modes are much faster than others.
 
-In the future, configurations for the `BinBender` may be made availiable using a `configure` function.
+- `SCATTER` : Randomizes bytes.
+- `ZERO` : Sets random bytes to 0.
+- `CHUNKS` : Randomizes chunks of bytes.
+- `REVERSE` : Reverses chunks of bytes.
+- `REMOVE` : Removes chunks of bytes. [*Note: If the amount of bytes to remove exceeds the file, this will crash the program*]
+- `MOVE` : Moves chunks of bytes around.
+- `SWAP` : Swaps chunks of bytes around.
+- `ISWAP` : Same as `SWAP`, but using iterators. [*Note: `SWAP` is better and this mode is planned to be removed.*]
+- `REPEAT` : Repeats chunks of bytes, replacing the following bytes.
+
+There is also a special mode that is used only in `options.ini` if you need to enter all the modes without entering them. It's called `ALL`.
+
+Some of these modes ignore certain options. For example only `REPEAT` uses the `repeat` option, and `SCATTER` & `ZERO` don't use the `chunksize` option.
+
+**Note:** Some modes are slower than others. Be sure to remember this if you do a massive databend using the `ALL` mode. `MOVE`, `REMOVE` are notoriously slow, with
+`REPEAT` also being comparitively much slower if you set the `repeat` option as very high.
 
 ## Compilation
 Compiling is as easy as running `make`. 
