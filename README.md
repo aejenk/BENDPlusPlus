@@ -1,4 +1,4 @@
-# BENDPlusPlus
+# BEND++
 A databender made in C++. Made to be fast, effective, full of features, and easy to use.
 
 ## Downloading source
@@ -27,6 +27,11 @@ Some of these modes ignore certain options. For example only `REPEAT` uses the `
 
 **Note:** Some modes are slower than others. Be sure to remember this if you do a massive databend using the `ALL` mode. `MOVE`, `REMOVE` are notoriously slow, with
 `REPEAT` also being comparitively much slower if you set the `repeat` option as very high.
+
+## Configuring and Executing BEND++
+All you need to databend is `m.exe` (which will have a better name in the future) and `options.ini`. They need to be in the same folder.
+To configure the options of **BEND++**, you will need to edit `options.ini`, which is self-explanatory.
+Once the options are up to your liking, execute `m.exe` and watch the databending work.
 
 ## Compilation
 Compiling is as easy as running `make`. 
