@@ -1,2 +1,0 @@
-program:
-		clang -o bend.exe -O0 -Wdeprecated-declarations -m64 main.cpp bin/binbend.cpp bin/mutations.cpp bin/timetaker.cpp
