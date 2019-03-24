@@ -1,2 +1,2 @@
 program:
-		g++ -o m -g -m64 main.cpp bin/binbend.cpp bin/binbend.h bin/mutations.cpp bin/mutations.h bin/timetaker.cpp
+		clang++ -o m -O0 -m64 main.cpp bin/binbend.cpp bin/mutations.cpp bin/timetaker.cpp
