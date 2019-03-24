@@ -11,5 +11,6 @@
 *.mkv*
 *.m4v*
 *.webm*
+.vscode/
 
 files/
