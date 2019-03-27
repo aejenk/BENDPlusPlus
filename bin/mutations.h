@@ -15,30 +15,42 @@ enum class OPTIONS {
 
 class Mutation {
     public:
+        // Pairs of options
         pair<size_t, size_t> rchunksize = {1,1};
         pair<size_t, size_t> rrepeats   = {1,1};
         pair<size_t, size_t> riters     = {1,1}; 
 
+        // General mutation function with an enum parameter to specify.
         void mutate(muts mutation, size_t safetybuf, string& contents);
 
+        // Initialises the distributions for the options
         void initDists();
+
+        // Retrieves the mutation string
         string getMutString();
+
+        // Resets the mutation.
         void resetMut();
 
     private:
+        // Options
         size_t chunksize;
         size_t repeats;
         size_t iter;
 
-        uniform_int_distribution<size_t> dist;
+        // Distributions for specific options.
+        uniform_int_distribution<size_t> dist; // used for random indexes
         uniform_int_distribution<size_t> csize;
         uniform_int_distribution<size_t> reps;
         uniform_int_distribution<size_t> itr;
 
+        // A representation of the mutation in string form.
         string mutstr = "";
 
-        size_t getOption(OPTIONS);
+        // Retrieves an option generator based on the option passed.
+        size_t getOptionGenerator(OPTIONS);
 
+        // Specific mutation functions //
         // mutates chunks of bytes
         void mutchunks(string& contents);
         // repeats chunks of bytes
@@ -57,5 +69,7 @@ class Mutation {
         void mutswap(string& contents);
         // swaps chunks of bytes around - uses iteration - legacy
         void mutiswap(string& contents);
+
+        // generates a random ASCII character
         char randomASCII();
 };

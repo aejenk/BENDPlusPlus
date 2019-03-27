@@ -1,33 +1,84 @@
 #include "binbend.h"
-#include "timetaker.cpp"
 
 using namespace std;
 
 // PUBLIC
 
-// Loads file into the Bender
+// Constructor
+BinBender::BinBender(const string& optfile){    
+    INIReader options (optfile);
+
+    if (options.ParseError() != 0) {
+        std::cout << "Can't find '" << optfile << "'. Please create an options file.\n";
+        return;
+    }
+
+    // Gets filename from options.
+    string fname = options.Get("Bender Options", "filename", "NO FILE");
+
+    // Loads the file into the bender.
+    takeTimeWithoutReturn("Loading", loadFile(fname));
+    cout << endl;
+
+    // Loads options from .ini file.
+    smodes         = options.Get("Bender Options", "modes", "NO MODE");
+    mut.rchunksize = parserange(options.Get("Bender Options", "chunksize", "NO CHUNKSIZE"));
+    mut.rrepeats   = parserange(options.Get("Bender Options", "repeats", "NO REPEATS"));
+    mut.riters     = parserange(options.Get("Bender Options", "iterations", "NO ITERATIONS"));
+    loops          = options.GetInteger("Bender Options", "loops", 1);     
+
+    // Parses the mode string as a usable mode variable.
+    modes = parsemodes(smodes);
+}
+
+void BinBender::start(){
+    for(int i = 0; i < loops; i++){
+        for(auto mut: modes){
+            mutate(mut.first, true); // safely mutates 1000 bytes via SCATTERing
+            takeTimeWithoutReturn("SAVING", saveFile());
+            reset();
+            cout << endl;
+        }
+    }
+}
+
+void BinBender::displayOptions(){
+    auto rangestr = [](pair<size_t, size_t> r) -> string {
+        if(r.first == r.second) return to_string(r.first);
+        else return to_string(r.first) + "-" + to_string(r.second);
+    };
+
+    cout << endl;
+    cout << setfill('-') << setw(40) << "\n";
+    cout << "Bender initalized with parameters:" << endl
+         << "Name      : " << filename << "." << extension << endl
+         << "Modes     : " << smodes << endl
+         << "Chunksize : " << rangestr(mut.rchunksize) << endl
+         << "Repeats   : " << rangestr(mut.rrepeats) << endl
+         << "Iterations: " << rangestr(mut.riters) << endl
+         << "Loops     : " << loops << endl;
+    cout << setfill('-') << setw(40) << "\n";
+}
+
 void BinBender::loadFile(const string& fname){
     contents = loadFileAsStr(fname);
-    if(contents == "") exit(EXIT_FAILURE);
+    if(contents == "") return;
     _mkdir("output");
     extension = fname.substr(fname.rfind('.'));
     filename = fname.substr(0, fname.rfind('.'));
     backup += contents; // backs up file for later restoration
 }
 
-// Mutates a string [iter] times using mode [type], with possible safety.
-// Acts as interface to call the mutate function from a Mutate object.
 void BinBender::mutate(muts type, bool safe /*= false*/){
     mut.initDists();
     mut.mutate(type, (safe) ? safetymin : 0, contents);
 }
 
-// Saves file with [filename].
-// Does this by buffering the contents into said file manually - for a speed increase.
 void BinBender::saveFile(){
-    string savefile = "output/";
-    savefile += filename;
-    savefile += mut.getMutString() + extension;
+    stringstream ss;
+    ss << "output/" << filename << mut.getMutString() << extension;
+    string savefile = ss.str();
+
     cout << "Saving [" << savefile << "]";
 
     // Opens a file with [filename]
@@ -53,8 +104,6 @@ void BinBender::saveFile(){
 }
 
 // PRIVATE
-
-// Loads a file as a string - no matter if it's binary.
 string BinBender::loadFileAsStr(const string& filename){
     ifstream ifile = ifstream(filename, ios::in | ios::binary | ios::ate);
 
@@ -108,4 +157,52 @@ string BinBender::loadFileAsStr(const string& filename){
 void BinBender::reset(){
     contents.assign(backup);
     mut.resetMut();
+}
+
+vector<string> BinBender::split(string s, char delimit) {
+    stringstream ss (s);
+    string segment;
+    vector<string> seglist;
+
+    while(getline(ss, segment, delimit)){
+        seglist.push_back(segment);
+    }
+
+    return seglist;
+};
+
+
+pair<size_t, size_t> BinBender::parserange(string range){
+    if(range.find('-') == string::npos){
+        long rge = stol(range);
+        return {rge, rge};
+    }
+    else{
+        vector<string> ranged = split(range, '-');
+        return {stol(ranged[0]), stol(ranged[1])};
+    }
+};
+
+vector<pair<muts, string>> BinBender::parsemodes (string smodes) {
+    vector<string> vmodes = split(smodes, ' ');
+
+    vector<pair<muts, string>> modes;
+
+    for(string mode: vmodes){
+        if(mode == "CHUNK") modes.push_back({muts::CHUNKS, "-CHK"});
+        else if(mode == "ZERO") modes.push_back({muts::ZERO, "-ZER"});
+        else if(mode == "REPEAT") modes.push_back({muts::REPEAT, "-REP"});
+        else if(mode == "REVERSE") modes.push_back({muts::REVERSE, "-REV"});
+        else if(mode == "SCATTER") modes.push_back({muts::SCATTER, "-SCT"});
+        else if(mode == "SWAP") modes.push_back({muts::SWAP, "-SWP"});
+        else if(mode == "ISWAP") modes.push_back({muts::ISWAP, "-ISP"});
+        else if(mode == "MOVE") modes.push_back({muts::MOVE, "-MOV"});
+        else if(mode == "REMOVE") modes.push_back({muts::REMOVE, "-RMV"});
+        else if(mode == "ALL"){
+            modes = allmodes;
+            break;
+        }
+    }
+
+    return modes;
 }

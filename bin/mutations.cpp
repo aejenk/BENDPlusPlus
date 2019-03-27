@@ -5,13 +5,15 @@ std::default_random_engine generator;
 
 using namespace std;
 
+/* Public functions */
+
 void Mutation::initDists() {
     csize = uniform_int_distribution<size_t>(rchunksize.first, rchunksize.second);
     reps = uniform_int_distribution<size_t>(rrepeats.first, rrepeats.second);
     itr = uniform_int_distribution<size_t>(riters.first, riters.second);
 }
 
-size_t Mutation::getOption(OPTIONS opt){
+size_t Mutation::getOptionGenerator(OPTIONS opt){
     switch(opt){
         case OPTIONS::CHUNKSIZE :
             return (rchunksize.first == rchunksize.second) ? rchunksize.first : csize(generator);
@@ -31,9 +33,9 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
     size_t min = safetybuf;
     size_t max;
 
-    chunksize = getOption(OPTIONS::CHUNKSIZE);
-    repeats = getOption(OPTIONS::REPEATS);
-    iter = getOption(OPTIONS::ITERS);
+    chunksize = getOptionGenerator(OPTIONS::CHUNKSIZE);
+    repeats = getOptionGenerator(OPTIONS::REPEATS);
+    iter = getOptionGenerator(OPTIONS::ITERS);
 
     switch(mutation){
         case muts::SCATTER :
@@ -65,6 +67,8 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
     cout << endl;
 }
 
+
+/* Private functions */
 void Mutation::mutscatter(string& contents){
     int a = 0;
     size_t rindex;
@@ -270,10 +274,10 @@ char Mutation::randomASCII(){
     return static_cast<char>(rand() % 256);
 }
 
-void Mutation::resetMut(){
-    mutstr = "";
+string Mutation::getMutString() {
+    return mutstr;
 }
 
-string Mutation::getMutString(){
-    return mutstr;
+void Mutation::resetMut() {
+    mutstr = "";
 }
