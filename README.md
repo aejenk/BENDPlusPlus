@@ -40,3 +40,10 @@ I suggest you install make if you do not have it - but if you'd rather directly 
 `g++ -o m -g -m64 main.cpp bin/binbend.cpp bin/binbend.h bin/hexbend.cpp bin/hexbend.h`
 
 **Please note**: You will need an x86-64 bit version of `g++` in order to have the full functionality of the program. Otherwise, you have a memory restriction of approximately 4GB. For files under than that you can use the i686/32-bit version. This is due to memory limitations with 32-bit systems.
+
+## Last update notes
+The glitched files will be saved to a folder called `output`. If this folder doesn't exist, it will be created.
+
+For now, you can't set the savename for the file. This name is dynamically generated from the original file, the modes used to corrupt, and the options used.
+
+You can now specify ranges in the options for `iters`, `repeats`, and `chunksize`.
