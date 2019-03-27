@@ -10,6 +10,7 @@
 *.mkv*
 *.m4v*
 *.webm*
+*.pdb*
 .vscode/
-
+output/
 files/

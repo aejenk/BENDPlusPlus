@@ -53,10 +53,15 @@ vector<pair<muts, string>> parsemodes (string smodes) {
     return modes;
 }
 
-void bendfile(BinBender bx, string name, muts mutation, int iters) {
-    bx.mutate(iters, mutation, true); // safely mutates 1000 bytes via SCATTERing
-    takeTimeWithoutReturn("SAVING", bx.saveFile(name));
-    cout << endl;
+pair<size_t, size_t> parserange (string range) {
+    if(range.find('-') == string::npos){
+        long rge = stol(range);
+        return {rge, rge};
+    }
+    else{
+        vector<string> ranged = strSplit(range, '-');
+        return {stol(ranged[0]), stol(ranged[1])};
+    }
 }
 
 int main() {
@@ -70,9 +75,16 @@ int main() {
 
     string name      = options.Get("Bender Options", "filename", "NO FILE");
     string smodes    = options.Get("Bender Options", "modes", "NO MODE");
-    bx.mut.chunksize = options.GetInteger("Bender Options", "chunksize", 1);
-    bx.mut.repeats   = options.GetInteger("Bender Options", "repeats", 1);
-    long iters       = options.GetInteger("Bender Options", "iterations", 1);
+
+    bx.mut.rchunksize = parserange(options.Get("Bender Options", "chunksize", "NO CHUNKSIZE"));
+    bx.mut.rrepeats   = parserange(options.Get("Bender Options", "repeats", "NO REPEATS"));
+    bx.mut.riters     = parserange(options.Get("Bender Options", "iterations", "NO ITERATIONS"));
+
+    auto rangestr = [](pair<size_t, size_t> r) -> string {
+        if(r.first == r.second) return to_string(r.first);
+        else return to_string(r.first) + "-" + to_string(r.second);
+    };
+
     long loops       = options.GetInteger("Bender Options", "loops", 1); 
 
     // Reads options from ini file
@@ -81,9 +93,9 @@ int main() {
     cout << "Bender initalized with parameters:" << endl
          << "Name      : " << name << endl
          << "Modes     : " << smodes << endl
-         << "Chunksize : " << bx.mut.chunksize << endl
-         << "Repeats   : " << bx.mut.repeats << endl
-         << "Iterations: " << iters << endl
+         << "Chunksize : " << rangestr(bx.mut.rchunksize) << endl
+         << "Repeats   : " << rangestr(bx.mut.rrepeats) << endl
+         << "Iterations: " << rangestr(bx.mut.riters) << endl
          << "Loops     : " << loops << endl;
     cout << setfill('-') << setw(40) << "\n";
 
@@ -96,9 +108,10 @@ int main() {
 
     for(int i = 0; i < loops; i++){
         for(auto mut: modes){
-            savename.insert(savename.find("."), to_string(i) + mut.second);
-            bendfile(bx, savename, mut.first, iters);
-            savename.assign(name);
+            bx.mutate(mut.first, true); // safely mutates 1000 bytes via SCATTERing
+            takeTimeWithoutReturn("SAVING", bx.saveFile());
+            bx.reset();
+            cout << endl;
         }
     }
 

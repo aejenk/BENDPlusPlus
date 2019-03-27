@@ -6,27 +6,29 @@
 using namespace std;
 using namespace std::chrono;
 
-// #define taketime(name, function) \
-//     if(is_void<decltype(function)>) time_calculate_void(name, [&]{return function;}); \
-//     else time_calculate_return(name, [&]{return function;});
 
+// Used for easier use of the function.
 #define takeTimeAndReturn(name, function) time_calculate_return(name, [&]{return function;})
 #define takeTimeWithoutReturn(name, function) time_calculate_void(name, [&]{return function;})
 
+// Calculates the time for a function that has a return type.
+// l should always be a lambda CONTAINING a call to the function.
 template<typename F>
 auto time_calculate_return(string fname, F l) -> decltype(l()){
     auto start = high_resolution_clock::now();
-    auto ret = l();
+    auto ret = l(); // executes function and retrieves return type
     auto end = high_resolution_clock::now();
     duration<float> diff = end-start;
     cout << "Time taken by ["  << fname << "] : " << diff.count() << "s";
-    return ret;
+    return ret; // returns the return value of the function
 }
 
+// Calculates the time for a function that has no return type.
+// l should always be a lambda CONTAINING a call to the function.
 template<typename F>
 auto time_calculate_void(string fname, F l) -> void {
     auto start = high_resolution_clock::now();
-    l();
+    l(); // executes function
     auto end = high_resolution_clock::now();
     duration<float> diff = end-start;
     cout << "Time taken by ["  << fname << "] : " << diff.count() << "s";

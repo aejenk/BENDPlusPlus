@@ -5,14 +5,35 @@ std::default_random_engine generator;
 
 using namespace std;
 
-void Mutation::mutate(muts mutation, size_t safetybuf, int iterations, string& contents){
+void Mutation::initDists() {
+    csize = uniform_int_distribution<size_t>(rchunksize.first, rchunksize.second);
+    reps = uniform_int_distribution<size_t>(rrepeats.first, rrepeats.second);
+    itr = uniform_int_distribution<size_t>(riters.first, riters.second);
+}
+
+size_t Mutation::getOption(OPTIONS opt){
+    switch(opt){
+        case OPTIONS::CHUNKSIZE :
+            return (rchunksize.first == rchunksize.second) ? rchunksize.first : csize(generator);
+        case OPTIONS::REPEATS :
+            return (rrepeats.first == rrepeats.second) ? rrepeats.first : reps(generator);
+        case OPTIONS::ITERS :
+            return (riters.first == riters.second) ? riters.first : itr(generator);
+        default :
+            return 0;
+    }
+}
+
+void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
     size_t len = contents.length();
     size_t rindex;
 
-    iter = iterations;
-
     size_t min = safetybuf;
     size_t max;
+
+    chunksize = getOption(OPTIONS::CHUNKSIZE);
+    repeats = getOption(OPTIONS::REPEATS);
+    iter = getOption(OPTIONS::ITERS);
 
     switch(mutation){
         case muts::SCATTER :
@@ -27,6 +48,7 @@ void Mutation::mutate(muts mutation, size_t safetybuf, int iterations, string& c
     }
 
     dist = uniform_int_distribution<size_t>(min,max);
+
        // switch with time calculations.
     switch(mutation){
         case muts::SCATTER :  takeTimeWithoutReturn("SCT", mutscatter(contents)); break;
@@ -47,6 +69,8 @@ void Mutation::mutscatter(string& contents){
     int a = 0;
     size_t rindex;
 
+    mutstr += "-SCT-i=" + to_string(iter);
+
     cout << "Mutating [SCATTER]";
         
     for(int i = 0; i < iter; i++){
@@ -62,17 +86,19 @@ void Mutation::mutscatter(string& contents){
 }
 
 void Mutation::mutchunks(string& contents){
+    mutstr += "-CHK-i=" + to_string(iter) + "-c=" + to_string(chunksize);
     int a = 0;
     size_t rindex;
 
     cout << "Mutating [CHUNKS]";
     for(int i = 0; i < iter; i++){
         a++;
+
         if(a >= iter/30){
             cout << ".";
             a = 0;
         }
-        
+
         rindex = dist(generator);
 
         for(int j = rindex; j < chunksize+rindex; j++){
@@ -82,6 +108,8 @@ void Mutation::mutchunks(string& contents){
 }
 
 void Mutation::mutrepeat(string& contents){
+    mutstr += "-REP-i=" + to_string(iter) + "-c=" + to_string(chunksize) + "-r=" + to_string(repeats);
+
     int a = 0;
     int len = contents.length();
     size_t rindex;
@@ -104,6 +132,7 @@ void Mutation::mutrepeat(string& contents){
 }
 
 void Mutation::mutreverse(string& contents){
+    mutstr += "-REV-i=" + to_string(iter) + "-c=" + to_string(chunksize);
     int a = 0;
     size_t rindex;
 
@@ -124,6 +153,7 @@ void Mutation::mutreverse(string& contents){
 }
 
 void Mutation::mutremove(string& contents){
+    mutstr += "-REM-i=" + to_string(iter) + "-c=" + to_string(chunksize);
     int a = 0;
     size_t rindex;
 
@@ -147,6 +177,7 @@ void Mutation::mutremove(string& contents){
 }
 
 void Mutation::mutmove(string& contents){
+    mutstr += "-MOV-i=" + to_string(iter) + "-c=" + to_string(chunksize);
     int a = 0;
     size_t rindex;
 
@@ -169,6 +200,7 @@ void Mutation::mutmove(string& contents){
 }
 
 void Mutation::mutiswap(string& contents){
+    mutstr += "-ISW-i=" + to_string(iter) + "-c=" + to_string(chunksize);
     int a = 0;
     size_t rbegin;
     size_t rbegin2;
@@ -191,6 +223,7 @@ void Mutation::mutiswap(string& contents){
 }
 
 void Mutation::mutzero(string& contents){
+    mutstr += "-ZER-i=" + to_string(iter);
     int a = 0;
     size_t rindex;
 
@@ -209,6 +242,7 @@ void Mutation::mutzero(string& contents){
 }
 
 void Mutation::mutswap(string& contents){
+    mutstr += "-SWP-i=" + to_string(iter) + "-c=" + to_string(chunksize);
     int a = 0;
     size_t rindex1;
     size_t rindex2;
@@ -234,4 +268,12 @@ void Mutation::mutswap(string& contents){
 
 char Mutation::randomASCII(){
     return static_cast<char>(rand() % 256);
+}
+
+void Mutation::resetMut(){
+    mutstr = "";
+}
+
+string Mutation::getMutString(){
+    return mutstr;
 }

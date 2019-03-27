@@ -9,15 +9,36 @@ enum class muts {
     SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO, SWAP, ISWAP/*, CHUNK0 */
 };
 
+enum class OPTIONS {
+    CHUNKSIZE, REPEATS, ITERS
+};
+
 class Mutation {
     public:
-        size_t chunksize = 1;
-        size_t repeats = 1;
-        void mutate(muts mutation, size_t safetybuf, int iterations, string& contents);
+        pair<size_t, size_t> rchunksize = {1,1};
+        pair<size_t, size_t> rrepeats   = {1,1};
+        pair<size_t, size_t> riters     = {1,1}; 
+
+        void mutate(muts mutation, size_t safetybuf, string& contents);
+
+        void initDists();
+        string getMutString();
+        void resetMut();
 
     private:
+        size_t chunksize;
+        size_t repeats;
+        size_t iter;
+
         uniform_int_distribution<size_t> dist;
-        int iter;
+        uniform_int_distribution<size_t> csize;
+        uniform_int_distribution<size_t> reps;
+        uniform_int_distribution<size_t> itr;
+
+        string mutstr = "";
+
+        size_t getOption(OPTIONS);
+
         // mutates chunks of bytes
         void mutchunks(string& contents);
         // repeats chunks of bytes
