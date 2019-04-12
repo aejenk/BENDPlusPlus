@@ -11,6 +11,7 @@ void Mutation::initDists() {
     csize = uniform_int_distribution<size_t>(rchunksize.first, rchunksize.second);
     reps = uniform_int_distribution<size_t>(rrepeats.first, rrepeats.second);
     itr = uniform_int_distribution<size_t>(riters.first, riters.second);
+    incbyd = uniform_int_distribution<size_t>(rincby.first, rincby.second);
 }
 
 size_t Mutation::getOptionGenerator(OPTIONS opt){
@@ -21,6 +22,8 @@ size_t Mutation::getOptionGenerator(OPTIONS opt){
             return (rrepeats.first == rrepeats.second) ? rrepeats.first : reps(generator);
         case OPTIONS::ITERS :
             return (riters.first == riters.second) ? riters.first : itr(generator);
+        case OPTIONS::INC_BY :
+            return (rincby.first == rincby.second) ? rincby.first : incbyd(generator);
         default :
             return 0;
     }
@@ -36,35 +39,41 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
     chunksize = getOptionGenerator(OPTIONS::CHUNKSIZE);
     repeats = getOptionGenerator(OPTIONS::REPEATS);
     iter = getOptionGenerator(OPTIONS::ITERS);
+    incby = getOptionGenerator(OPTIONS::INC_BY);
 
     int r_id = rand()%1000; // to avoid overwriting
     mutstr += "-RID=" + to_string(r_id);
 
     switch(mutation){
-        case muts::SCATTER :
-        case muts::ZERO    : max = len; break;
-        case muts::CHUNKS  :
-        case muts::MOVE    :
-        case muts::REMOVE  :
-        case muts::SWAP    :
-        case muts::ISWAP   :
-        case muts::REVERSE : max = len-chunksize; break;
-        case muts::REPEAT  : max = len - (chunksize*repeats); break;
+        // normal modes
+        case muts::SCATTER      :
+        case muts::ZERO         : max = len; break;
+        // chunk modes
+        case muts::CHUNKS       :
+        case muts::MOVE         :
+        case muts::REMOVE       :
+        case muts::SWAP         :
+        case muts::ISWAP        :
+        case muts::INCREMENT    :
+        case muts::REVERSE      : max = len-chunksize; break;
+        // special modes
+        case muts::REPEAT       : max = len - (chunksize*repeats); break;
     }
 
     dist = uniform_int_distribution<size_t>(min,max);
 
        // switch with time calculations.
     switch(mutation){
-        case muts::SCATTER :  takeTimeWithoutReturn("SCT", mutscatter(contents)); break;
-        case muts::CHUNKS  :  takeTimeWithoutReturn("CHKS", mutchunks(contents)); break;
-        case muts::MOVE    :     takeTimeWithoutReturn("MOV", mutmove(contents)); break;
-        case muts::REMOVE  :   takeTimeWithoutReturn("REM", mutremove(contents)); break;
-        case muts::REVERSE :  takeTimeWithoutReturn("REV", mutreverse(contents)); break;
-        case muts::REPEAT  :   takeTimeWithoutReturn("REP", mutrepeat(contents)); break;
-        case muts::ZERO    :     takeTimeWithoutReturn("ZER", mutzero(contents)); break;
-        case muts::SWAP    :     takeTimeWithoutReturn("SWP", mutswap(contents)); break;
-        case muts::ISWAP   :    takeTimeWithoutReturn("IWP", mutiswap(contents)); break;
+        case muts::SCATTER      :     takeTimeWithoutReturn("SCT", mutscatter(contents)); break;
+        case muts::CHUNKS       :     takeTimeWithoutReturn("CHKS", mutchunks(contents)); break;
+        case muts::MOVE         :        takeTimeWithoutReturn("MOV", mutmove(contents)); break;
+        case muts::REMOVE       :      takeTimeWithoutReturn("REM", mutremove(contents)); break;
+        case muts::REVERSE      :     takeTimeWithoutReturn("REV", mutreverse(contents)); break;
+        case muts::REPEAT       :      takeTimeWithoutReturn("REP", mutrepeat(contents)); break;
+        case muts::ZERO         :        takeTimeWithoutReturn("ZER", mutzero(contents)); break;
+        case muts::SWAP         :        takeTimeWithoutReturn("SWP", mutswap(contents)); break;
+        case muts::ISWAP        :       takeTimeWithoutReturn("IWP", mutiswap(contents)); break;
+        case muts::INCREMENT    :   takeTimeWithoutReturn("INC", mutincrement(contents)); break;
     }
 
     cout << endl;
@@ -110,6 +119,28 @@ void Mutation::mutchunks(string& contents){
 
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] = randomASCII();
+        }
+    }
+}
+
+void Mutation::mutincrement(string& contents){
+    mutstr += "-INC-i=" + to_string(iter) + "-c=" + to_string(chunksize) + "-inc=" + to_string(incby);
+    int a = 0;
+    size_t rindex;
+
+    cout << "Mutating [INCREMENT]";
+
+    for(int i = 0; i < iter; i++){
+        a++;
+        if(a >= iter/30){
+            cout << ".";
+            a = 0;
+        }
+
+        rindex = dist(generator);
+
+        for(int j = rindex; j < chunksize+rindex; j++){
+            contents[j] += incby;
         }
     }
 }

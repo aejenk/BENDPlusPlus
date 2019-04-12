@@ -84,5 +84,6 @@ class BinBender {
                 {muts::ISWAP, "-IWP"},
                 {muts::MOVE, "-MOV"},
                 {muts::REMOVE, "-RMV"},
+                {muts::INCREMENT, "-INC"}
             };
 };

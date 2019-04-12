@@ -6,11 +6,11 @@
 using namespace std;
 
 enum class muts {
-    SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO, SWAP, ISWAP/*, CHUNK0 */
+    SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO, SWAP, ISWAP, INCREMENT
 };
 
 enum class OPTIONS {
-    CHUNKSIZE, REPEATS, ITERS
+    CHUNKSIZE, REPEATS, ITERS, INC_BY
 };
 
 class Mutation {
@@ -19,6 +19,7 @@ class Mutation {
         pair<size_t, size_t> rchunksize = {1,1};
         pair<size_t, size_t> rrepeats   = {1,1};
         pair<size_t, size_t> riters     = {1,1}; 
+        pair<size_t, size_t> rincby     = {1,1};
 
         // General mutation function with an enum parameter to specify.
         void mutate(muts mutation, size_t safetybuf, string& contents);
@@ -37,12 +38,14 @@ class Mutation {
         size_t chunksize;
         size_t repeats;
         size_t iter;
+        size_t incby;
 
         // Distributions for specific options.
         uniform_int_distribution<size_t> dist; // used for random indexes
         uniform_int_distribution<size_t> csize;
         uniform_int_distribution<size_t> reps;
         uniform_int_distribution<size_t> itr;
+        uniform_int_distribution<size_t> incbyd;
 
         // A representation of the mutation in string form.
         string mutstr = "";
@@ -69,6 +72,8 @@ class Mutation {
         void mutswap(string& contents);
         // swaps chunks of bytes around - uses iteration - legacy
         void mutiswap(string& contents);
+        // grabs chunks of bytes and increments them
+        void mutincrement(string& contents);
 
         // generates a random ASCII character
         char randomASCII();

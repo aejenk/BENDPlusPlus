@@ -11,6 +11,7 @@
 *.m4v*
 *.webm*
 *.pdb*
+*.bmp*
 .vscode/
 output/
 files/

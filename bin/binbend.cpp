@@ -25,6 +25,7 @@ BinBender::BinBender(const string& optfile){
     mut.rchunksize = parserange(options.Get("Bender Options", "chunksize", "NO CHUNKSIZE"));
     mut.rrepeats   = parserange(options.Get("Bender Options", "repeats", "NO REPEATS"));
     mut.riters     = parserange(options.Get("Bender Options", "iterations", "NO ITERATIONS"));
+    mut.rincby     = parserange(options.Get("Bender Options", "incrementby", "NO INCREMENTS"));
     loops          = options.GetInteger("Bender Options", "loops", 1);     
 
     // Parses the mode string as a usable mode variable.
@@ -51,12 +52,13 @@ void BinBender::displayOptions(){
     cout << endl;
     cout << setfill('-') << setw(40) << "\n";
     cout << "Bender initalized with parameters:" << endl
-         << "Name      : " << filename << extension << endl
-         << "Modes     : " << smodes << endl
-         << "Chunksize : " << rangestr(mut.rchunksize) << endl
-         << "Repeats   : " << rangestr(mut.rrepeats) << endl
-         << "Iterations: " << rangestr(mut.riters) << endl
-         << "Loops     : " << loops << endl;
+         << "Name           : " << filename << extension << endl
+         << "Modes          : " << smodes << endl
+         << "Chunksize      : " << rangestr(mut.rchunksize) << endl
+         << "Repeats        : " << rangestr(mut.rrepeats) << endl
+         << "Iterations     : " << rangestr(mut.riters) << endl
+         << "Increment By   : " << rangestr(mut.rincby) << endl
+         << "Loops          : " << loops << endl;
     cout << setfill('-') << setw(40) << "\n";
 }
 
@@ -174,6 +176,7 @@ vector<string> BinBender::split(string s, char delimit) {
 
 pair<size_t, size_t> BinBender::parserange(string range){
     if(range.find('-') == string::npos){
+        // ! Does not add defaults yet. Default support coming soon.
         long rge = stol(range);
         return {rge, rge};
     }
@@ -198,6 +201,7 @@ vector<pair<muts, string>> BinBender::parsemodes (string smodes) {
         else if(mode == "ISWAP") modes.push_back({muts::ISWAP, "-ISP"});
         else if(mode == "MOVE") modes.push_back({muts::MOVE, "-MOV"});
         else if(mode == "REMOVE") modes.push_back({muts::REMOVE, "-RMV"});
+        else if(mode == "INCREMENT") modes.push_back({muts::INCREMENT, "-INC"});
         else if(mode == "ALL"){
             modes = allmodes;
             break;
