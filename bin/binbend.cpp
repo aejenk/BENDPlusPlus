@@ -51,7 +51,7 @@ void BinBender::displayOptions(){
     cout << endl;
     cout << setfill('-') << setw(40) << "\n";
     cout << "Bender initalized with parameters:" << endl
-         << "Name      : " << filename << "." << extension << endl
+         << "Name      : " << filename << extension << endl
          << "Modes     : " << smodes << endl
          << "Chunksize : " << rangestr(mut.rchunksize) << endl
          << "Repeats   : " << rangestr(mut.rrepeats) << endl
@@ -189,7 +189,7 @@ vector<pair<muts, string>> BinBender::parsemodes (string smodes) {
     vector<pair<muts, string>> modes;
 
     for(string mode: vmodes){
-        if(mode == "CHUNK") modes.push_back({muts::CHUNKS, "-CHK"});
+        if(mode == "CHUNKS") modes.push_back({muts::CHUNKS, "-CHK"});
         else if(mode == "ZERO") modes.push_back({muts::ZERO, "-ZER"});
         else if(mode == "REPEAT") modes.push_back({muts::REPEAT, "-REP"});
         else if(mode == "REVERSE") modes.push_back({muts::REVERSE, "-REV"});
