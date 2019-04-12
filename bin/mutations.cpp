@@ -37,6 +37,9 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
     repeats = getOptionGenerator(OPTIONS::REPEATS);
     iter = getOptionGenerator(OPTIONS::ITERS);
 
+    int r_id = rand()%1000; // to avoid overwriting
+    mutstr += "-RID=" + to_string(r_id);
+
     switch(mutation){
         case muts::SCATTER :
         case muts::ZERO    : max = len; break;
