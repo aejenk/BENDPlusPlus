@@ -151,6 +151,7 @@ void Mutation::mutincrement(string& contents){
 
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] += incby;
+            contents[j] = (contents[j]%255)+1;
         }
     }
 }
@@ -173,6 +174,7 @@ void Mutation::mutrainbow(string& contents){
 
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] += floor((j-rindex)/raindelay) * rainsize;
+            contents[j] = (contents[j]%255)+1;
         }
     }
 }
@@ -223,6 +225,10 @@ void Mutation::mutreverse(string& contents){
 }
 
 void Mutation::mutremove(string& contents){
+    if(chunksize*iter >= contents.length()){
+        mutstr += "-ERROR-REM";
+        return;
+    }
     mutstr += "-REM-i=" + to_string(iter) + "-c=" + to_string(chunksize);
     int a = 0;
     size_t rindex;
