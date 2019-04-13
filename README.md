@@ -20,6 +20,7 @@ So far there are multiple modes. Not all modes are built the same however, due t
 - `SWAP` : Swaps chunks of bytes around.
 - `ISWAP` : Same as `SWAP`, but using iterators. [*Note: `SWAP` is better and this mode is planned to be removed.*]
 - `REPEAT` : Repeats chunks of bytes, replacing the following bytes.
+- `INCREMENT` : Increments a chunk of bytes by an N amount set as an option.
 
 There is also a special mode that is used only in `options.ini` if you need to enter all the modes without entering them. It's called `ALL`.
 
@@ -37,7 +38,7 @@ Once the options are up to your liking, execute `m.exe` and watch the databendin
 Compiling is as easy as running `make`. 
 I suggest you install make if you do not have it - but if you'd rather directly use a terminal command:
 
-`g++ -o m -g -m64 main.cpp bin/binbend.cpp bin/binbend.h bin/hexbend.cpp bin/hexbend.h`
+`g++ -o m -g -m64 main.cpp bin/binbend.cpp bin/binbend.h`
 
 **Please note**: You will need an x86-64 bit version of `g++` in order to have the full functionality of the program. Otherwise, you have a memory restriction of approximately 4GB. For files under than that you can use the i686/32-bit version. This is due to memory limitations with 32-bit systems.
 
