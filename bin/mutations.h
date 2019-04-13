@@ -8,11 +8,12 @@ using namespace std;
 
 enum class muts {
     SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO,
-    SWAP, ISWAP, INCREMENT, RAINBOW
+    SWAP, ISWAP, INCREMENT, RAINBOW, ECHO
 };
 
 enum class OPTIONS {
-    CHUNKSIZE, REPEATS, ITERS, INC_BY, RAIN_DELAY, RAIN_SIZE
+    CHUNKSIZE, REPEATS, ITERS, INC_BY, RAIN_DELAY, RAIN_SIZE,
+    DECAY, PERSIST
 };
 
 class Mutation {
@@ -24,6 +25,8 @@ class Mutation {
         pair<size_t, size_t> rincby     = {1,1};
         pair<size_t, size_t> rraindelay = {1,1};
         pair<size_t, size_t> rrainsize  = {1,1};
+        pair<float, float> rdecay     = {1.0,1.0};
+        pair<size_t, size_t> rpersist   = {1,1};
 
         // General mutation function with an enum parameter to specify.
         void mutate(muts mutation, size_t safetybuf, string& contents);
@@ -45,6 +48,8 @@ class Mutation {
         size_t incby;
         size_t raindelay;
         size_t rainsize;
+        float decay;
+        size_t persist;
 
         // Distributions for specific options.
         uniform_int_distribution<size_t> dist; // used for random indexes
@@ -54,12 +59,15 @@ class Mutation {
         uniform_int_distribution<size_t> incbyd;
         uniform_int_distribution<size_t> raindelayd;
         uniform_int_distribution<size_t> rainsized;
+        uniform_real_distribution<float> decayd;
+        uniform_int_distribution<size_t> persistd;
 
         // A representation of the mutation in string form.
         string mutstr = "";
 
         // Retrieves an option generator based on the option passed.
-        size_t getOptionGenerator(OPTIONS);
+        template<typename T=size_t>
+        T getOptionGenerator(OPTIONS);
 
         // Specific mutation functions //
         // mutates chunks of bytes
@@ -84,6 +92,8 @@ class Mutation {
         void mutincrement(string& contents);
         // grabs chunks of bytes and adds them with an increasing sequence
         void mutrainbow(string& contents);
+        // echoes chunks of bytes - can customize delay and persistence.
+        void mutecho(string& contents);
 
         // generates a random ASCII character
         char randomASCII();

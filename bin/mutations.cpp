@@ -14,9 +14,12 @@ void Mutation::initDists() {
     incbyd = uniform_int_distribution<size_t>(rincby.first, rincby.second);
     raindelayd = uniform_int_distribution<size_t>(rraindelay.first, rraindelay.second);
     rainsized = uniform_int_distribution<size_t>(rrainsize.first, rrainsize.second);
+    decayd = uniform_real_distribution<float>(rdecay.first, rdecay.second);
+    persistd = uniform_int_distribution<size_t>(rpersist.first, rpersist.second);
 }
 
-size_t Mutation::getOptionGenerator(OPTIONS opt){
+template<typename T>
+T Mutation::getOptionGenerator(OPTIONS opt){
     switch(opt){
         case OPTIONS::CHUNKSIZE :
             return (rchunksize.first == rchunksize.second) ? rchunksize.first : csize(generator);
@@ -30,6 +33,10 @@ size_t Mutation::getOptionGenerator(OPTIONS opt){
             return (rraindelay.first == rraindelay.second) ? rraindelay.first : raindelayd(generator);
         case OPTIONS::RAIN_SIZE :
             return (rrainsize.first == rrainsize.second) ? rrainsize.first : rainsized(generator);
+        case OPTIONS::DECAY :
+            return (rdecay.first == rdecay.second) ? rdecay.first : decayd(generator);
+        case OPTIONS::PERSIST :
+            return (rpersist.first == rpersist.second) ? rpersist.first : persistd(generator);
         default :
             return 0;
     }
@@ -48,6 +55,8 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
     incby = getOptionGenerator(OPTIONS::INC_BY);
     raindelay = getOptionGenerator(OPTIONS::RAIN_DELAY);
     rainsize = getOptionGenerator(OPTIONS::RAIN_SIZE);
+    decay = getOptionGenerator<float>(OPTIONS::DECAY);
+    persist = getOptionGenerator(OPTIONS::PERSIST);
 
     int r_id = rand()%1000; // to avoid overwriting
     mutstr += "-RID=" + to_string(r_id);
@@ -64,6 +73,7 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
         case muts::ISWAP        :
         case muts::INCREMENT    :
         case muts::RAINBOW      :
+        case muts::ECHO         :
         case muts::REVERSE      : max = len-chunksize; break;
         // other modes
         case muts::REPEAT       : max = len - (chunksize*repeats); break;
@@ -84,6 +94,7 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
         case muts::ISWAP        :       takeTimeWithoutReturn("IWP", mutiswap(contents)); break;
         case muts::INCREMENT    :   takeTimeWithoutReturn("INC", mutincrement(contents)); break;
         case muts::RAINBOW      :     takeTimeWithoutReturn("RBW", mutrainbow(contents)); break;
+        case muts::ECHO         :        takeTimeWithoutReturn("ECH", mutecho(contents)); break;
     }
 
     cout << endl;
@@ -151,7 +162,7 @@ void Mutation::mutincrement(string& contents){
 
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] += incby;
-            contents[j] = (contents[j]%255)+1;
+            // contents[j] = (contents[j]%255)+1;
         }
     }
 }
@@ -174,7 +185,44 @@ void Mutation::mutrainbow(string& contents){
 
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] += floor((j-rindex)/raindelay) * rainsize;
-            contents[j] = (contents[j]%255)+1;
+            // contents[j] = (contents[j]%255)+1;
+        }
+    }
+}
+
+void Mutation::mutecho(string& contents){
+    mutstr += "-ECH-i=" + to_string(iter) + "-c=" + to_string(chunksize) + "-ed=" + to_string(decay) + "-rs=" + to_string(persist);
+    int a = 0;
+    size_t rindex;
+
+    cout << "Mutating [ECHO]";
+
+    for(int i = 0; i < iter; i++){
+        a++;
+        if(a >= iter/30){
+            cout << ".";
+            a = 0;
+        }
+
+        /**
+         * Idea:
+         * Let J be the contents index;
+         * J would iterate over the chunk. This acts normally.
+         * 
+         * Let K be the persistence index;
+         * K would be used for persistence.
+         * contents[J] would be increased by (J-1)*decay + (J-2)*decay^2 ... (J-K)*decay^K.
+         * However, if K <= 0, then break, otherwise you go out of index.
+         */ 
+
+        rindex = dist(generator);
+
+        for(int j = rindex; j < chunksize+rindex; j++){
+            float k_decay = decay;
+            for(int k = j-1; k >= j-persist && k >= 0; k--){
+                contents[j] += contents[k]*k_decay;
+                k_decay *= decay;
+            }
         }
     }
 }

@@ -12,6 +12,7 @@
 *.webm*
 *.pdb*
 *.bmp*
+*.wav*
 .vscode/
 output/
 files/

@@ -21,14 +21,16 @@ BinBender::BinBender(const string& optfile){
     cout << endl;
 
     // Loads options from .ini file.
-    smodes         = options.Get("Bender Options", "modes", "NO MODE");
+    smodes         =            options.Get("Bender Options", "modes", "NO MODE");
     mut.rchunksize = parserange(options.Get("Bender Options", "chunksize", "NULL"));
     mut.rrepeats   = parserange(options.Get("Bender Options", "repeats", "NULL"));
     mut.riters     = parserange(options.Get("Bender Options", "iterations", "NULL"));
     mut.rincby     = parserange(options.Get("Bender Options", "incrementby", "NULL"));
     mut.rraindelay = parserange(options.Get("Bender Options", "raindelay", "NULL"));
     mut.rrainsize  = parserange(options.Get("Bender Options", "rainsize", "NULL"));
-    loops          = options.GetInteger("Bender Options", "loops", 1);     
+    mut.rdecay     = parserange<float>(options.Get("Bender Options", "decay", "NULL"), "float");
+    mut.rpersist   = parserange(options.Get("Bender Options", "persist", "NULL"));
+    loops          =     options.GetInteger("Bender Options", "loops", 1);     
 
     // Parses the mode string as a usable mode variable.
     modes = parsemodes(smodes);
@@ -46,7 +48,7 @@ void BinBender::start(){
 }
 
 void BinBender::displayOptions(){
-    auto rangestr = [](pair<size_t, size_t> r) -> string {
+    auto rangestr = [](auto r) -> string {
         if(r.first == r.second) return to_string(r.first);
         else return to_string(r.first) + "-" + to_string(r.second);
     };
@@ -60,6 +62,10 @@ void BinBender::displayOptions(){
          << "Repeats        : " << rangestr(mut.rrepeats) << endl
          << "Iterations     : " << rangestr(mut.riters) << endl
          << "Increment By   : " << rangestr(mut.rincby) << endl
+         << "Rain Delay     : " << rangestr(mut.rraindelay) << endl
+         << "Rain Size      : " << rangestr(mut.rrainsize) << endl
+         << "Echo Decay     : " << rangestr(mut.rdecay) << endl
+         << "Echo Persist   : " << rangestr(mut.rpersist) << endl
          << "Loops          : " << loops << endl;
     cout << setfill('-') << setw(40) << "\n";
 }
@@ -175,16 +181,25 @@ vector<string> BinBender::split(string s, char delimit) {
     return seglist;
 };
 
-
-pair<size_t, size_t> BinBender::parserange(string range){
+template<typename T>
+pair<T, T> BinBender::parserange(string range, string type /*= "size_t"*/){
     if(range.find('-') == string::npos){
         // ! Does not add defaults yet. Default support coming soon.
-        long rge = stol(range);
-        return {rge, rge};
+        if(type == "size_t") return {stol(range),stol(range)};
+        else if(type == "float") return {stof(range),stof(range)};
+        else return {NULL,NULL};
     }
-    else{
+    else if (type == "size_t") {
         vector<string> ranged = split(range, '-');
         return {stol(ranged[0]), stol(ranged[1])};
+    }
+    else if (type == "float") {
+        vector<string> ranged = split(range, '-');
+        return {stof(ranged[0]), stof(ranged[1])};
+    }
+    else {
+        cout << "Invalid range" << endl;
+        return {NULL, NULL};
     }
 };
 
@@ -205,6 +220,7 @@ vector<pair<muts, string>> BinBender::parsemodes (string smodes) {
         else if(mode == "REMOVE") modes.push_back({muts::REMOVE, "-RMV"});
         else if(mode == "INCREMENT") modes.push_back({muts::INCREMENT, "-INC"});
         else if(mode == "RAINBOW") modes.push_back({muts::RAINBOW, "-RBW"});
+        else if(mode == "ECHO") modes.push_back({muts::ECHO, "-ECH"});
         else if(mode == "ALL"){
             modes = allmodes;
             break;

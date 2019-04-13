@@ -69,7 +69,10 @@ class BinBender {
          * organisation of the code.
          */
         vector<string> split(string s, char delimit); // Splits string using a delimiter.
-        pair<size_t, size_t> parserange(string range); // Parses a range string. (x-y)
+
+        template<typename T=size_t>
+        pair<T, T> parserange(string range, string type="size_t"); // Parses a range string. (x-y)
+
         vector<pair<muts, string>> parsemodes (string smodes); // Parses modes from mode string.
 
         // Contains all the modes, along with their codes.
@@ -85,6 +88,7 @@ class BinBender {
                 {muts::MOVE, "-MOV"},
                 {muts::REMOVE, "-RMV"},
                 {muts::INCREMENT, "-INC"},
-                {muts::RAINBOW, "-RBW"}
+                {muts::RAINBOW, "-RBW"},
+                {muts::ECHO, "-ECH"}
             };
 };
