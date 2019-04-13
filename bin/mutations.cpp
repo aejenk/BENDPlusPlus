@@ -12,6 +12,8 @@ void Mutation::initDists() {
     reps = uniform_int_distribution<size_t>(rrepeats.first, rrepeats.second);
     itr = uniform_int_distribution<size_t>(riters.first, riters.second);
     incbyd = uniform_int_distribution<size_t>(rincby.first, rincby.second);
+    raindelayd = uniform_int_distribution<size_t>(rraindelay.first, rraindelay.second);
+    rainsized = uniform_int_distribution<size_t>(rrainsize.first, rrainsize.second);
 }
 
 size_t Mutation::getOptionGenerator(OPTIONS opt){
@@ -24,6 +26,10 @@ size_t Mutation::getOptionGenerator(OPTIONS opt){
             return (riters.first == riters.second) ? riters.first : itr(generator);
         case OPTIONS::INC_BY :
             return (rincby.first == rincby.second) ? rincby.first : incbyd(generator);
+        case OPTIONS::RAIN_DELAY :
+            return (rraindelay.first == rraindelay.second) ? rraindelay.first : raindelayd(generator);
+        case OPTIONS::RAIN_SIZE :
+            return (rrainsize.first == rrainsize.second) ? rrainsize.first : rainsized(generator);
         default :
             return 0;
     }
@@ -40,6 +46,8 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
     repeats = getOptionGenerator(OPTIONS::REPEATS);
     iter = getOptionGenerator(OPTIONS::ITERS);
     incby = getOptionGenerator(OPTIONS::INC_BY);
+    raindelay = getOptionGenerator(OPTIONS::RAIN_DELAY);
+    rainsize = getOptionGenerator(OPTIONS::RAIN_SIZE);
 
     int r_id = rand()%1000; // to avoid overwriting
     mutstr += "-RID=" + to_string(r_id);
@@ -55,8 +63,9 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
         case muts::SWAP         :
         case muts::ISWAP        :
         case muts::INCREMENT    :
+        case muts::RAINBOW      :
         case muts::REVERSE      : max = len-chunksize; break;
-        // special modes
+        // other modes
         case muts::REPEAT       : max = len - (chunksize*repeats); break;
     }
 
@@ -74,6 +83,7 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
         case muts::SWAP         :        takeTimeWithoutReturn("SWP", mutswap(contents)); break;
         case muts::ISWAP        :       takeTimeWithoutReturn("IWP", mutiswap(contents)); break;
         case muts::INCREMENT    :   takeTimeWithoutReturn("INC", mutincrement(contents)); break;
+        case muts::RAINBOW      :     takeTimeWithoutReturn("RBW", mutrainbow(contents)); break;
     }
 
     cout << endl;
@@ -141,6 +151,28 @@ void Mutation::mutincrement(string& contents){
 
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] += incby;
+        }
+    }
+}
+
+void Mutation::mutrainbow(string& contents){
+    mutstr += "-RBW-i=" + to_string(iter) + "-c=" + to_string(chunksize) + "-rd=" + to_string(raindelay) + "-rs=" + to_string(rainsize);
+    int a = 0;
+    size_t rindex;
+
+    cout << "Mutating [RAINBOW]";
+
+    for(int i = 0; i < iter; i++){
+        a++;
+        if(a >= iter/30){
+            cout << ".";
+            a = 0;
+        }
+
+        rindex = dist(generator);
+
+        for(int j = rindex; j < chunksize+rindex; j++){
+            contents[j] += floor((j-rindex)/raindelay) * rainsize;
         }
     }
 }

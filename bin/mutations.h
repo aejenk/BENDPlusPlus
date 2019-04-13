@@ -2,15 +2,17 @@
 #include <string>
 #include <algorithm>
 #include <random>
+#include <math.h>
 
 using namespace std;
 
 enum class muts {
-    SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO, SWAP, ISWAP, INCREMENT
+    SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO,
+    SWAP, ISWAP, INCREMENT, RAINBOW
 };
 
 enum class OPTIONS {
-    CHUNKSIZE, REPEATS, ITERS, INC_BY
+    CHUNKSIZE, REPEATS, ITERS, INC_BY, RAIN_DELAY, RAIN_SIZE
 };
 
 class Mutation {
@@ -20,6 +22,8 @@ class Mutation {
         pair<size_t, size_t> rrepeats   = {1,1};
         pair<size_t, size_t> riters     = {1,1}; 
         pair<size_t, size_t> rincby     = {1,1};
+        pair<size_t, size_t> rraindelay = {1,1};
+        pair<size_t, size_t> rrainsize  = {1,1};
 
         // General mutation function with an enum parameter to specify.
         void mutate(muts mutation, size_t safetybuf, string& contents);
@@ -39,6 +43,8 @@ class Mutation {
         size_t repeats;
         size_t iter;
         size_t incby;
+        size_t raindelay;
+        size_t rainsize;
 
         // Distributions for specific options.
         uniform_int_distribution<size_t> dist; // used for random indexes
@@ -46,6 +52,8 @@ class Mutation {
         uniform_int_distribution<size_t> reps;
         uniform_int_distribution<size_t> itr;
         uniform_int_distribution<size_t> incbyd;
+        uniform_int_distribution<size_t> raindelayd;
+        uniform_int_distribution<size_t> rainsized;
 
         // A representation of the mutation in string form.
         string mutstr = "";
@@ -74,6 +82,8 @@ class Mutation {
         void mutiswap(string& contents);
         // grabs chunks of bytes and increments them
         void mutincrement(string& contents);
+        // grabs chunks of bytes and adds them with an increasing sequence
+        void mutrainbow(string& contents);
 
         // generates a random ASCII character
         char randomASCII();

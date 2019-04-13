@@ -22,10 +22,12 @@ BinBender::BinBender(const string& optfile){
 
     // Loads options from .ini file.
     smodes         = options.Get("Bender Options", "modes", "NO MODE");
-    mut.rchunksize = parserange(options.Get("Bender Options", "chunksize", "NO CHUNKSIZE"));
-    mut.rrepeats   = parserange(options.Get("Bender Options", "repeats", "NO REPEATS"));
-    mut.riters     = parserange(options.Get("Bender Options", "iterations", "NO ITERATIONS"));
-    mut.rincby     = parserange(options.Get("Bender Options", "incrementby", "NO INCREMENTS"));
+    mut.rchunksize = parserange(options.Get("Bender Options", "chunksize", "NULL"));
+    mut.rrepeats   = parserange(options.Get("Bender Options", "repeats", "NULL"));
+    mut.riters     = parserange(options.Get("Bender Options", "iterations", "NULL"));
+    mut.rincby     = parserange(options.Get("Bender Options", "incrementby", "NULL"));
+    mut.rraindelay = parserange(options.Get("Bender Options", "raindelay", "NULL"));
+    mut.rrainsize  = parserange(options.Get("Bender Options", "rainsize", "NULL"));
     loops          = options.GetInteger("Bender Options", "loops", 1);     
 
     // Parses the mode string as a usable mode variable.
@@ -202,6 +204,7 @@ vector<pair<muts, string>> BinBender::parsemodes (string smodes) {
         else if(mode == "MOVE") modes.push_back({muts::MOVE, "-MOV"});
         else if(mode == "REMOVE") modes.push_back({muts::REMOVE, "-RMV"});
         else if(mode == "INCREMENT") modes.push_back({muts::INCREMENT, "-INC"});
+        else if(mode == "RAINBOW") modes.push_back({muts::RAINBOW, "-RBW"});
         else if(mode == "ALL"){
             modes = allmodes;
             break;
