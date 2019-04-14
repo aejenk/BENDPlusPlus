@@ -91,6 +91,8 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
 
     dist = uniform_int_distribution<size_t>(min,max);
 
+    loadingBar = LoadingBar(iter, 30);
+
        // switch with time calculations.
     switch(mutation){
         case muts::SCATTER      :     takeTimeWithoutReturn("SCT", mutscatter(contents)); break;
@@ -114,107 +116,72 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
 
 /* Private functions */
 void Mutation::mutscatter(string& contents){
-    int a = 0;
+    loadingBar.setLabel("Scatter");
     size_t rindex;
 
     mutstr += "-SCT-i=" + to_string(iter);
-
-    cout << "Mutating [SCATTER]";
         
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex = dist(generator);
         contents[rindex] = randomASCII();
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutchunks(string& contents){
     mutstr += "-CHK-i=" + to_string(iter) + "-c=" + to_string(chunksize);
-    int a = 0;
+    loadingBar.setLabel("Chunks");
     size_t rindex;
 
-    cout << "Mutating [CHUNKS]";
     for(int i = 0; i < iter; i++){
-        a++;
-
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex = dist(generator);
 
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] = randomASCII();
         }
+
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutincrement(string& contents){
     mutstr += "-INC-i=" + to_string(iter) + "-c=" + to_string(chunksize) + "-inc=" + to_string(incby);
-    int a = 0;
+    loadingBar.setLabel("Increment");
     size_t rindex;
 
-    cout << "Mutating [INCREMENT]";
-
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex = dist(generator);
 
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] += incby;
-            // contents[j] = (contents[j]%255)+1;
         }
+
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutrainbow(string& contents){
     mutstr += "-RBW-i=" + to_string(iter) + "-c=" + to_string(chunksize) + "-rd=" + to_string(raindelay) + "-rs=" + to_string(rainsize);
-    int a = 0;
+    loadingBar.setLabel("Increment");
     size_t rindex;
 
-    cout << "Mutating [RAINBOW]";
-
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex = dist(generator);
 
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] += floor((j-rindex)/raindelay) * rainsize;
-            // contents[j] = (contents[j]%255)+1;
         }
+
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutaverage(string& contents){
     mutstr += "-AVG-i=" + to_string(iter) + "-c=" + to_string(chunksize);
-    int a = 0;
+    loadingBar.setLabel("Average");
     size_t rindex;
 
-    cout << "Mutatiing [AVERAGE]";
-
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex = dist(generator);
 
         long avg = 0;
@@ -225,34 +192,17 @@ void Mutation::mutaverage(string& contents){
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] = avg;
         }
+
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutecho(string& contents){
     mutstr += "-ECH-i=" + to_string(iter) + "-c=" + to_string(chunksize) + "-ed=" + to_string(decay) + "-rs=" + to_string(persist);
-    int a = 0;
+    loadingBar.setLabel("Echo");
     size_t rindex;
 
-    cout << "Mutating [ECHO]";
-
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
-        /**
-         * Idea:
-         * Let J be the contents index;
-         * J would iterate over the chunk. This acts normally.
-         * 
-         * Let K be the persistence index;
-         * K would be used for persistence.
-         * contents[J] would be increased by (J-1)*decay + (J-2)*decay^2 ... (J-K)*decay^K.
-         * However, if K <= 0, then break, otherwise you go out of index.
-         */ 
-
         rindex = dist(generator);
 
         for(int j = rindex; j < chunksize+rindex; j++){
@@ -262,23 +212,18 @@ void Mutation::mutecho(string& contents){
                 k_decay *= decay;
             }
         }
+
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutrepeat(string& contents){
     mutstr += "-REP-i=" + to_string(iter) + "-c=" + to_string(chunksize) + "-r=" + to_string(repeats);
-
-    int a = 0;
+    loadingBar.setLabel("Repeat");
     int len = contents.length();
     size_t rindex;
 
-    cout << "Mutating [REPEAT]";
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
         rindex = dist(generator);
         string randomchunk = contents.substr(rindex, chunksize);
         
@@ -286,27 +231,24 @@ void Mutation::mutrepeat(string& contents){
             rindex += chunksize;
             contents = contents.replace(rindex, chunksize, randomchunk);
         }
+
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutreverse(string& contents){
     mutstr += "-REV-i=" + to_string(iter) + "-c=" + to_string(chunksize);
-    int a = 0;
+    loadingBar.setLabel("Reverse");
     size_t rindex;
 
-    cout << "Mutating [REVERSE]";
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex = dist(generator);
 
         string chunk = contents.substr(rindex, chunksize);
         reverse(chunk.begin(), chunk.end());
         contents = contents.replace(rindex, chunksize, chunk);
+
+        loadingBar.nextStep();
     }
 }
 
@@ -316,41 +258,28 @@ void Mutation::mutremove(string& contents){
         return;
     }
     mutstr += "-REM-i=" + to_string(iter) + "-c=" + to_string(chunksize);
-    int a = 0;
+    loadingBar.setLabel("Remove");
     size_t rindex;
 
     size_t min = dist.min();
     size_t max = dist.max();
 
-    cout << "Mutating [REMOVE]";
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex = dist(generator);
         contents.erase(rindex, chunksize);
 
         max -= chunksize;
         dist = uniform_int_distribution<size_t>(min, max);
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutmove(string& contents){
     mutstr += "-MOV-i=" + to_string(iter) + "-c=" + to_string(chunksize);
-    int a = 0;
+    loadingBar.setLabel("Move");
     size_t rindex;
 
-    cout << "Mutating [MOVE]";
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex = dist(generator);
 
         string sub = contents.substr(rindex, chunksize);
@@ -358,66 +287,50 @@ void Mutation::mutmove(string& contents){
 
         rindex = dist(generator);
         contents.insert(rindex, sub);
+
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutiswap(string& contents){
     mutstr += "-ISW-i=" + to_string(iter) + "-c=" + to_string(chunksize);
-    int a = 0;
+    loadingBar.setLabel("Iterswap");
     size_t rbegin;
     size_t rbegin2;
     size_t rend;
 
-    cout << "Mutating [ISWAP]";
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rbegin = dist(generator);
         rbegin2 = dist(generator);
         rend = rbegin + chunksize;
 
         swap_ranges(contents.begin()+rbegin, contents.begin()+rend, contents.begin()+rbegin2);
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutzero(string& contents){
     mutstr += "-ZER-i=" + to_string(iter);
-    int a = 0;
+    loadingBar.setLabel("Zero");
     size_t rindex;
-
-    cout << "Mutating [ZERO]";
         
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex = dist(generator);
         contents[rindex] = 0x00;
+
+        loadingBar.nextStep();
     }
 }
 
 void Mutation::mutswap(string& contents){
     mutstr += "-SWP-i=" + to_string(iter) + "-c=" + to_string(chunksize);
-    int a = 0;
+    loadingBar.setLabel("Swap");
     size_t rindex1;
     size_t rindex2;
     
     cout << "Mutating [SWAP]";
 
     for(int i = 0; i < iter; i++){
-        a++;
-        if(a >= iter/30){
-            cout << ".";
-            a = 0;
-        }
-
         rindex1 = dist(generator);
         rindex2 = dist(generator);
         string sub1 = contents.substr(rindex1, chunksize);
@@ -425,6 +338,8 @@ void Mutation::mutswap(string& contents){
 
         contents.replace(rindex1, chunksize, sub2);
         contents.replace(rindex2, chunksize, sub1);
+
+        loadingBar.nextStep();
     }
 }
 

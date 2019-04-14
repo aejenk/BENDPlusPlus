@@ -94,28 +94,23 @@ void BinBender::saveFile(){
     ss << "output/" << filename << mut.getMutString() << extension;
     string savefile = ss.str();
 
-    cout << "Saving [" << savefile << "]";
+    cout << "Saving [" << savefile << "]" << endl;
 
     // Opens a file with [filename]
     ofstream ofile (savefile, ios::out | ios::binary);
     char buffer[bufferSize];
 
-    int a = 0;
-
     size_t filesize = contents.size();
+    LoadingBar lbar = LoadingBar(filesize/bufferSize, 30);
 
     // Buffers contents into file according to amount of buffers used to load file.
     for(int i = 0; (i*bufferSize) < filesize; i++){
-        // Used for printing a loading bar.
-        a++;
-        if(a >= (filesize/(bufferSize*30))){
-            cout << ".";
-            a = 0;
-        }
         // Saves a chunk of bytes into the file.
         string bufferstr = contents.substr(i*bufferSize, bufferSize);
         ofile << bufferstr;
+        lbar.nextStep();
     }
+    cout << endl;
 }
 
 // PRIVATE
@@ -137,25 +132,17 @@ string BinBender::loadFileAsStr(const string& filename){
 
         unique_ptr<char[]> buffer (new char[bufferSize]);
 
-        int n = (size/bufferSize)/30;
-        int a = 0;
-
-        cout << "Loading [" << filename << "]";
+        LoadingBar lbar = LoadingBar((size/bufferSize), 30);
+        lbar.setLabel("Load("+filename+")");
 
         while(ifile){
-            // Used for loading bar...
-            a++;
-            if(a >= n){
-                cout << ".";
-                a = 0;
-            }
-
             // Reads a chunk of bytes from the file.
             ifile.read(buffer.get(), bufferSize);
             string x = string(buffer.get(), bufferSize);
-
             ss.append(x); // ? May be replaced with stringstream
+            lbar.nextStep();
         }
+        cout << endl;
 
         // Sets dumb safety minimum to a 50th of a file.
         // This assumes a heuristic that the file is large enough that -

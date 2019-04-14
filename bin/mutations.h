@@ -4,6 +4,8 @@
 #include <random>
 #include <math.h>
 
+#include "loading.cpp"
+
 using namespace std;
 
 enum class muts {
@@ -50,6 +52,9 @@ class Mutation {
         size_t rainsize;
         float decay;
         size_t persist;
+
+        // Loading bar
+        LoadingBar loadingBar;
 
         // Distributions for specific options.
         uniform_int_distribution<size_t> dist; // used for random indexes
