@@ -91,7 +91,7 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
 
     dist = uniform_int_distribution<size_t>(min,max);
 
-    loadingBar = LoadingBar(iter, 30);
+    loadingBar = LoadingBar(iter);
 
        // switch with time calculations.
     switch(mutation){

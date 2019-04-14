@@ -8,15 +8,13 @@ using namespace std;
 struct LoadingBar {
     string name = "";
     size_t steps;
-    int width;
     float progressBuffer = 0.0;
     float progress = 0.0;
 
     LoadingBar(){}
 
-    LoadingBar(size_t psteps, int pwidth){
+    LoadingBar(size_t psteps){
         steps = psteps;
-        width = pwidth;
     }
 
     void setLabel(string pname){

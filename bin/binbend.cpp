@@ -99,7 +99,7 @@ void BinBender::saveFile(){
     char buffer[bufferSize];
 
     size_t filesize = contents.size();
-    LoadingBar lbar = LoadingBar(filesize/bufferSize, 30);
+    LoadingBar lbar = LoadingBar(filesize/bufferSize);
 
     // Buffers contents into file according to amount of buffers used to load file.
     for(int i = 0; (i*bufferSize) < filesize; i++){
@@ -131,7 +131,7 @@ string BinBender::loadFileAsStr(const string& filename){
 
         unique_ptr<char[]> buffer (new char[bufferSize]);
 
-        LoadingBar lbar = LoadingBar((size/bufferSize), 30);
+        LoadingBar lbar = LoadingBar((size/bufferSize));
         lbar.setLabel("Load("+filename+")");
 
         while(ifile){
