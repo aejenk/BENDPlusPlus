@@ -94,8 +94,6 @@ void BinBender::saveFile(){
     ss << "output/" << filename << mut.getMutString() << extension;
     string savefile = ss.str();
 
-    cout << "Saving [" << savefile << "]" << endl;
-
     // Opens a file with [filename]
     ofstream ofile (savefile, ios::out | ios::binary);
     char buffer[bufferSize];
@@ -110,7 +108,8 @@ void BinBender::saveFile(){
         ofile << bufferstr;
         lbar.nextStep();
     }
-    cout << endl;
+
+    cout << "\tSaved [" << savefile << "]" << endl;
 }
 
 // PRIVATE
@@ -142,7 +141,6 @@ string BinBender::loadFileAsStr(const string& filename){
             ss.append(x); // ? May be replaced with stringstream
             lbar.nextStep();
         }
-        cout << endl;
 
         // Sets dumb safety minimum to a 50th of a file.
         // This assumes a heuristic that the file is large enough that -

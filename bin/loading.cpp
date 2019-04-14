@@ -9,6 +9,7 @@ struct LoadingBar {
     string name = "";
     size_t steps;
     int width;
+    float progressBuffer = 0.0;
     float progress = 0.0;
 
     LoadingBar(){}
@@ -23,18 +24,13 @@ struct LoadingBar {
     }
 
     void nextStep(){
-        progress += (1.0/steps);
-
-        int barWidth = 70;
-
-        cout << "[(" << name << ")";
-        int pos = barWidth * progress;
-        for (int i = 0; i < barWidth; ++i) {
-            if (i < pos) cout << "=";
-            else if (i == pos) cout << ">";
-            else cout << " ";
+        progressBuffer += (1.0/steps);
+        if(progressBuffer >= 0.001){
+            progress += progressBuffer;
+            progressBuffer = 0.0;
         }
-        cout << "] " << FIXED_FLOAT(progress * 100.0, 2) << " %\r";
+        else return;
+        cout << "[" << name << "](" << FIXED_FLOAT(progress*100.0,1) << ") %\r" ;
         cout.flush();
     }
 };
