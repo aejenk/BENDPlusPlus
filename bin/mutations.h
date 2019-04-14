@@ -8,7 +8,7 @@ using namespace std;
 
 enum class muts {
     SCATTER, CHUNKS, REPEAT, REVERSE, REMOVE, MOVE, ZERO,
-    SWAP, ISWAP, INCREMENT, RAINBOW, ECHO
+    SWAP, ISWAP, INCREMENT, RAINBOW, ECHO, AVERAGE
 };
 
 enum class OPTIONS {
@@ -94,6 +94,8 @@ class Mutation {
         void mutrainbow(string& contents);
         // echoes chunks of bytes - can customize delay and persistence.
         void mutecho(string& contents);
+        // averages chunks of bytes
+        void mutaverage(string& contents);
 
         // generates a random ASCII character
         char randomASCII();

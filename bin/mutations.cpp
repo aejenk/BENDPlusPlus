@@ -74,6 +74,7 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
         case muts::INCREMENT    :
         case muts::RAINBOW      :
         case muts::ECHO         :
+        case muts::AVERAGE      :
         case muts::REVERSE      : max = len-chunksize; break;
         // other modes
         case muts::REPEAT       : max = len - (chunksize*repeats); break;
@@ -95,6 +96,7 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
         case muts::INCREMENT    :   takeTimeWithoutReturn("INC", mutincrement(contents)); break;
         case muts::RAINBOW      :     takeTimeWithoutReturn("RBW", mutrainbow(contents)); break;
         case muts::ECHO         :        takeTimeWithoutReturn("ECH", mutecho(contents)); break;
+        case muts::AVERAGE      :     takeTimeWithoutReturn("AVG", mutaverage(contents)); break;
     }
 
     cout << endl;
@@ -186,6 +188,33 @@ void Mutation::mutrainbow(string& contents){
         for(int j = rindex; j < chunksize+rindex; j++){
             contents[j] += floor((j-rindex)/raindelay) * rainsize;
             // contents[j] = (contents[j]%255)+1;
+        }
+    }
+}
+
+void Mutation::mutaverage(string& contents){
+    mutstr += "-AVG-i=" + to_string(iter) + "-c=" + to_string(chunksize);
+    int a = 0;
+    size_t rindex;
+
+    cout << "Mutatiing [AVERAGE]";
+
+    for(int i = 0; i < iter; i++){
+        a++;
+        if(a >= iter/30){
+            cout << ".";
+            a = 0;
+        }
+
+        rindex = dist(generator);
+
+        long avg = 0;
+        for(int j = rindex; j < chunksize+rindex; j++){
+            avg += contents[j];
+        }
+        avg /= chunksize;
+        for(int j = rindex; j < chunksize+rindex; j++){
+            contents[j] = avg;
         }
     }
 }

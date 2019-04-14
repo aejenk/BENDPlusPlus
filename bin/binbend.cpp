@@ -221,6 +221,7 @@ vector<pair<muts, string>> BinBender::parsemodes (string smodes) {
         else if(mode == "INCREMENT") modes.push_back({muts::INCREMENT, "-INC"});
         else if(mode == "RAINBOW") modes.push_back({muts::RAINBOW, "-RBW"});
         else if(mode == "ECHO") modes.push_back({muts::ECHO, "-ECH"});
+        else if(mode == "AVERAGE") modes.push_back({muts::AVERAGE, "-AVG"});
         else if(mode == "ALL"){
             modes = allmodes;
             break;

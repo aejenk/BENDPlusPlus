@@ -89,6 +89,7 @@ class BinBender {
                 {muts::REMOVE, "-RMV"},
                 {muts::INCREMENT, "-INC"},
                 {muts::RAINBOW, "-RBW"},
-                {muts::ECHO, "-ECH"}
+                {muts::ECHO, "-ECH"},
+                {muts::AVERAGE, "-AVG"}
             };
 };
