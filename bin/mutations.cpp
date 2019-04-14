@@ -50,13 +50,22 @@ void Mutation::mutate(muts mutation, size_t safetybuf, string& contents){
     size_t max;
 
     chunksize = getOptionGenerator(OPTIONS::CHUNKSIZE);
-    repeats = getOptionGenerator(OPTIONS::REPEATS);
     iter = getOptionGenerator(OPTIONS::ITERS);
-    incby = getOptionGenerator(OPTIONS::INC_BY);
-    raindelay = getOptionGenerator(OPTIONS::RAIN_DELAY);
-    rainsize = getOptionGenerator(OPTIONS::RAIN_SIZE);
-    decay = getOptionGenerator<float>(OPTIONS::DECAY);
-    persist = getOptionGenerator(OPTIONS::PERSIST);
+
+    if(mutation == muts::SCATTER){
+        repeats = getOptionGenerator(OPTIONS::REPEATS);
+    }
+    else if(mutation == muts::INCREMENT){
+        incby = getOptionGenerator(OPTIONS::INC_BY);
+    }
+    else if(mutation == muts::RAINBOW){
+        raindelay = getOptionGenerator(OPTIONS::RAIN_DELAY);
+        rainsize = getOptionGenerator(OPTIONS::RAIN_SIZE);
+    }
+    else if(mutation == muts::ECHO){
+        decay = getOptionGenerator<float>(OPTIONS::DECAY);
+        persist = getOptionGenerator(OPTIONS::PERSIST);
+    }
 
     int r_id = rand()%1000; // to avoid overwriting
     mutstr += "-RID=" + to_string(r_id);

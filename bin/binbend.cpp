@@ -20,17 +20,22 @@ BinBender::BinBender(const string& optfile){
     takeTimeWithoutReturn("Loading", loadFile(fname));
     cout << endl;
 
-    // Loads options from .ini file.
+    // Bender options - apply to BinBender
     smodes         =            options.Get("Bender Options", "modes", "NO MODE");
-    mut.rchunksize = parserange(options.Get("Bender Options", "chunksize", "NULL"));
-    mut.rrepeats   = parserange(options.Get("Bender Options", "repeats", "NULL"));
-    mut.riters     = parserange(options.Get("Bender Options", "iterations", "NULL"));
-    mut.rincby     = parserange(options.Get("Bender Options", "incrementby", "NULL"));
-    mut.rraindelay = parserange(options.Get("Bender Options", "raindelay", "NULL"));
-    mut.rrainsize  = parserange(options.Get("Bender Options", "rainsize", "NULL"));
-    mut.rdecay     = parserange<float>(options.Get("Bender Options", "decay", "NULL"), "float");
-    mut.rpersist   = parserange(options.Get("Bender Options", "persist", "NULL"));
-    loops          =     options.GetInteger("Bender Options", "loops", 1);     
+    loops          =     options.GetInteger("Bender Options", "loops", 1);
+    // Mode options - applies to all modes
+    mut.riters     = parserange(options.Get("Mode Options", "iterations", "NULL"));
+    mut.rchunksize = parserange(options.Get("Mode Options", "chunksize", "NULL"));
+    // Repeat options - applies to REPEAT
+    mut.rrepeats   = parserange(options.Get("Repeat Options", "repeats", "NULL"));
+    // Increment options - applies to INCREMENT
+    mut.rincby     = parserange(options.Get("Increment Options", "incrementby", "NULL"));
+    // Rainbow options - applies to RAINBOW
+    mut.rraindelay = parserange(options.Get("Rainbow Options", "raindelay", "NULL"));
+    mut.rrainsize  = parserange(options.Get("Rainbow Options", "rainsize", "NULL"));
+    // Echo options - applies to ECHO
+    mut.rdecay     = parserange<float>(options.Get("Echo Options", "decay", "NULL"), "float");
+    mut.rpersist   = parserange(options.Get("Echo Options", "persist", "NULL"));    
 
     // Parses the mode string as a usable mode variable.
     modes = parsemodes(smodes);
