@@ -23,12 +23,12 @@ struct LoadingBar {
 
     void nextStep(){
         progressBuffer += (1.0/steps);
-        if(progressBuffer >= 0.001){
+        if(progressBuffer >= 0.0001){
             progress += progressBuffer;
             progressBuffer = 0.0;
         }
         else return;
-        cout << "[" << name << "](" << FIXED_FLOAT(progress*100.0,1) << ") %\r" ;
+        cout << "[" << name << "](" << FIXED_FLOAT(progress*100.0,2) << ") %\r" ;
         cout.flush();
     }
 };

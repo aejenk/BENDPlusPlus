@@ -162,7 +162,7 @@ void Mutation::mutincrement(string& contents){
 
 void Mutation::mutrainbow(string& contents){
     mutstr += "-RBW-i=" + to_string(iter) + "-c=" + to_string(chunksize) + "-rd=" + to_string(raindelay) + "-rs=" + to_string(rainsize);
-    loadingBar.setLabel("Increment");
+    loadingBar.setLabel("Rainbow");
     size_t rindex;
 
     for(int i = 0; i < iter; i++){

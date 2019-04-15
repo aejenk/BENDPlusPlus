@@ -80,7 +80,14 @@ void BinBender::loadFile(const string& fname){
     if(contents == "") return;
     _mkdir("output");
     extension = fname.substr(fname.rfind('.'));
-    filename = fname.substr(0, fname.rfind('.'));
+
+    // Used to avoid problems with paths including folders.
+    // Without this, if the filename is <folder>/<name>,
+    // the output name is output/<folder>/<name>.
+    size_t indexFolder = fname.rfind('/');
+    indexFolder = (indexFolder == string::npos) ? 0 : indexFolder+1;
+    filename = fname.substr(indexFolder, fname.rfind('.'));
+    
     backup += contents; // backs up file for later restoration
 }
 
