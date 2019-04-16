@@ -4,10 +4,8 @@
 #define FIXED_FLOAT(x,y) fixed << setprecision(y) <<(x)
 #define CLEARLINE() std::cout << std::setfill(' ') << std::setw(50) << "%\r";
 
-using namespace std;
-
 struct LoadingBar {
-    string name = "";
+    std::string name = "";
     size_t steps;
     float progressBuffer = 0.0;
     float progress = 0.0;
@@ -18,7 +16,11 @@ struct LoadingBar {
         steps = psteps;
     }
 
-    void setLabel(string pname){
+    ~LoadingBar(){
+        std::cout << std::endl;
+    }
+
+    void setLabel(std::string pname){
         name = pname;
     }
 
@@ -29,7 +31,7 @@ struct LoadingBar {
             progressBuffer = 0.0;
         }
         else return;
-        cout << "[" << name << "] " << FIXED_FLOAT(progress*100.0,2) << "%\r" ;
-        cout.flush();
+        std::cout << "[" << name << "] " << FIXED_FLOAT(progress*100.0,2) << "%\r" ;
+        std::cout.flush();
     }
 };

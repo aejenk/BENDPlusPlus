@@ -2,14 +2,14 @@
 
 
 void CalBender::loadFile(std::string filename){
-    std::ifstream ifile = std::ifstream(filename, ios::in | ios::binary | ios::ate);
+    std::ifstream ifile = std::ifstream(filename, std::ios::in | std::ios::binary | std::ios::ate);
 
-    string ss; // ? May be replaced with stringstream
+    std::string ss; // ? May be replaced with stringstream
 
     if(ifile.is_open()){
         fname = filename;
         size_t size = ifile.tellg();
-        ifile.seekg(0, ios::beg);
+        ifile.seekg(0, std::ios::beg);
 
         bufferSize = 1024;
 
@@ -18,20 +18,20 @@ void CalBender::loadFile(std::string filename){
             bufferSize *= 1024;
         }
 
-        unique_ptr<char[]> buffer (new char[bufferSize]);
+        std::unique_ptr<char[]> buffer (new char[bufferSize]);
 
-        LoadingBar lbar = LoadingBar((size/bufferSize));
-        lbar.setLabel("Load("+fname+")");
+        LoadingBar *lbar = new LoadingBar((size/bufferSize));
+        lbar->setLabel("Load("+fname+")");
 
         while(ifile){
             // Reads a chunk of bytes from the file.
             ifile.read(buffer.get(), bufferSize);
-            string x = string(buffer.get(), bufferSize);
+            std::string x = std::string(buffer.get(), bufferSize);
             ss.append(x); // ? May be replaced with stringstream
-            lbar.nextStep();
+            lbar->nextStep();
         }
 
-        CLEARLINE();
+        delete lbar;
 
         // Sets dumb safety minimum to a 50th of a file.
         // This assumes a heuristic that the file is large enough that -
@@ -42,7 +42,7 @@ void CalBender::loadFile(std::string filename){
 
         
         if(contents == ""){
-            cout << "File is empty. Aborting bender..." << endl;
+            std::cout << "File is empty. Aborting bender..." << std::endl;
             exit(EXIT_FAILURE);
         }
 
@@ -53,13 +53,13 @@ void CalBender::loadFile(std::string filename){
         // Without this, if the filename is <folder>/<name>,
         // the output name is output/<folder>/<name>.
         size_t indexFolder = fname.rfind('/');
-        indexFolder = (indexFolder == string::npos) ? 0 : indexFolder+1;
+        indexFolder = (indexFolder == std::string::npos) ? 0 : indexFolder+1;
         fname = fname.substr(indexFolder, fname.rfind('.'));
         
         backup.assign(contents); // backs up file for later restoration
     }
     else{
-        cout << "No file loaded - are you sure that file exists?" << endl;
+        std::cout << "No file loaded - are you sure that file exists?" << std::endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -68,13 +68,34 @@ void CalBender::addMutation(std::string mutname, Mutation *m){
     CalMutation *cm = dynamic_cast<CalMutation*>(m);
     
     // The mutation passed needs to be of type CalMutation or a subclass of it.
-    if(cm = nullptr) {
-        cout << "Couldn't add mutation \"" << mutname << "\" - Mutation passed not of type CalMutation." << endl;
+    if(cm == nullptr) {
+        std::cout << "Couldn't add mutation \"" << mutname << "\" - Mutation passed not of type CalMutation." << std::endl;
         return;
     }
 
     cm->safetymin = safetyMin;
     mutations.emplace(mutname, cm);
+    std::cout << "Added mutation [" << mutname << "]" << std::endl;
+}
+
+void CalBender::loadDefaultMutations(){
+    std::vector<std::pair<std::string, Mutation*>> defaults = {
+        {"Random", new ChunkRandomize()},
+        {"Move", new MoveChunks()},
+        {"Repeat", new RepeatChunks()},
+        {"Remove", new RemoveChunks()},
+        {"Reverse", new ReverseChunks()},
+        {"Null", new NullChunks()},
+        {"Swap", new SwapChunks()},
+        {"Increment", new IncrementBytes()},
+        {"Rainbow", new RainbowSpread()},
+        {"Echo", new EchoWave()},
+        {"Average", new AverageChunks()}
+    };
+
+    for(auto mut: defaults){
+        this->addMutation(mut.first, mut.second);
+    }
 }
 
 void CalBender::mutateUsing(std::string mutname, std::map<std::string, std::any> options){
@@ -82,25 +103,29 @@ void CalBender::mutateUsing(std::string mutname, std::map<std::string, std::any>
 }
 
 void CalBender::saveContents(){
-    stringstream ss;
+    std::stringstream ss;
     ss << "output/" << fname << extension;
-    string savefile = ss.str();
+    std::string savefile = ss.str();
 
     // Opens a file with [filename]
-    ofstream ofile (savefile, ios::out | ios::binary);
+    std::ofstream ofile (savefile, std::ios::out | std::ios::binary);
 
     size_t filesize = contents.size();
-    LoadingBar lbar = LoadingBar(filesize/bufferSize);
+    LoadingBar *lbar = new LoadingBar(filesize/bufferSize);
 
     // Buffers contents into file according to amount of buffers used to load file.
     for(int i = 0; (i*bufferSize) < filesize; i++){
         // Saves a chunk of bytes into the file.
-        string bufferstr = contents.substr(i*bufferSize, bufferSize);
+        std::string bufferstr = contents.substr(i*bufferSize, bufferSize);
         ofile << bufferstr;
-        lbar.nextStep();
+        lbar->nextStep();
     }
 
-    CLEARLINE();
+    delete lbar;
 
-    cout << "\tSaved [" << savefile << "]" << endl;
+    std::cout << "\tSaved [" << savefile << "]" << std::endl;
+}
+
+void CalBender::resetFile(){
+    contents.assign(backup);
 }

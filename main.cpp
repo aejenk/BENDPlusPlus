@@ -3,6 +3,7 @@
 
 using namespace std;
 
+
 struct WrongMut : Mutation {
     void mutate(std::string &contents, std::map<std::string, std::any> options){
         return;
@@ -10,18 +11,38 @@ struct WrongMut : Mutation {
 };
 
 int main() {
+    std::cout.sync_with_stdio(false);
 
-    Bender *bb = new CalBender();
+    CalBender *bb = new CalBender();
 
     bb->addMutation("ThisShouldFail", new WrongMut());
 
-    bb->loadFile("voila.mp4");
-    bb->addMutation("ChunkM", new ChunkMutation());
-    bb->mutateUsing("ChunkM", {
-        {"iterations", 1000L},
-        {"chunksize", 26000L}
-    });
-    bb->saveContents();
+    std::map<std::string, std::any> options = {
+        {"iterations", 5000L},
+        {"chunksize", 4L},
+        {"echodelay", 0.10},
+        {"echolength", 2},
+        {"raindelay", 100},
+        {"rainsize", 1},
+        {"incrementby", 120},
+        {"repeats", 4}
+    };
+
+    bb->loadFile("MAX300.avi");
+    bb->loadDefaultMutations();
+
+    std::vector<std::string> modes = {
+        "Random", "Move", "Repeat", "Remove",
+        "Reverse", "Null", "Swap", "Increment",
+        "Rainbow", "Echo", "Average"
+    };
+
+    for(auto mode : modes){
+        bb->mutateUsing(mode, options);
+        bb->saveContents();
+        bb->resetFile();
+    }
+
 
     return 0;
 }

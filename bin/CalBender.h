@@ -16,8 +16,10 @@ class CalBender : public Bender {
     public:
         void loadFile(std::string filename) override;
         void addMutation(std::string mutname, Mutation *m) override;
+        void loadDefaultMutations();
         void mutateUsing(std::string mutname, std::map<std::string, std::any> options) override;
         void saveContents() override;
+        void resetFile();
 
     private:
         std::string contents;
