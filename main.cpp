@@ -1,14 +1,14 @@
-#include "bin/binbend.h"
+// #include "bin/binbend.h"
+#include "bin/CalBender.cpp"
 
 using namespace std;
 
 
 int main() {
-    string optfname = "options.ini";
 
-    BinBender *bx = new BinBender(optfname);
-    bx->displayOptions();
-    bx->start();
+    Bender *bb = new CalBender();
+    bb->loadFile("fakefile.txt");
+    bb->addMutation("ChunkM", new ChunkMutation());
 
     return 0;
 }
