@@ -17,26 +17,26 @@ struct WrongMut : Mutation {
 int main() {
     std::cout.sync_with_stdio(false);
 
-    CalBender *bb = new CalBender();
+    Bender *bb = new CalBender();
 
     bb->addMutation("ThisShouldFail", new WrongMut());
 
     std::map<std::string, std::any> options = {
-        {"iterations", 100L},
-        {"chunksize", 1000L},
-        {"echodelay", 0.10},
+        {"iterations", 10},
+        {"chunksize", 25000000},
+        {"echodelay", 0.10f},
         {"echolength", 2},
-        {"raindelay", 100},
+        {"raindelay", 1000000},
         {"rainsize", 1},
         {"incrementby", 120},
         {"repeats", 4}
     };
 
-    bb->loadFile("MAX300.avi");
+    bb->loadFile("bk.avi");
     bb->loadDefaultMutations();
 
     std::vector<std::string> modes = {
-        "Random", "Move", "Remove",
+        "Random", "Move", "Repeat", "Remove",
         "Reverse", "Null", "Swap", "Increment",
         "Rainbow", "Echo", "Average"
     };

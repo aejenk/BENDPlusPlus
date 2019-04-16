@@ -129,6 +129,7 @@ void CalBender::saveContents(){
 }
 
 void CalBender::resetFile(){
+    std::cout << "Resetting file to last backup..." << std::endl;
     contents.assign(backup);
-    muthistory = "";
+    muthistory.clear();
 }

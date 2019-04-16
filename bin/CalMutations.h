@@ -2,6 +2,7 @@
 #include "loading.cpp"
 #include <random>
 #include <sstream>
+#include <algorithm>
 
 #ifndef BASEMUT_H
 #define BASEMUT_H
