@@ -31,7 +31,7 @@ void CalBender::loadFile(std::string filename){
             lbar->nextStep();
         }
 
-        delete lbar;
+        std::cout << "\n";
 
         // Sets dumb safety minimum to a 50th of a file.
         // This assumes a heuristic that the file is large enough that -
@@ -101,11 +101,12 @@ void CalBender::loadDefaultMutations(){
 void CalBender::mutateUsing(std::string mutname, std::map<std::string, std::any> options){
     this->muthistory += this->mutations[mutname]->to_string(options);
     this->mutations[mutname]->mutate(contents, options);
+    std::cout << "\n";
 }
 
 void CalBender::saveContents(){
     std::stringstream ss;
-    ss << "output/" << fname << extension;
+    ss << "output/" << fname << muthistory << extension;
     std::string savefile = ss.str();
 
     // Opens a file with [filename]
@@ -122,11 +123,12 @@ void CalBender::saveContents(){
         lbar->nextStep();
     }
 
-    delete lbar;
+    std::cout << "\n";
 
     std::cout << "\tSaved [" << savefile << "]" << std::endl;
 }
 
 void CalBender::resetFile(){
     contents.assign(backup);
+    muthistory = "";
 }

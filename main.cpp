@@ -22,8 +22,8 @@ int main() {
     bb->addMutation("ThisShouldFail", new WrongMut());
 
     std::map<std::string, std::any> options = {
-        {"iterations", 5000L},
-        {"chunksize", 4L},
+        {"iterations", 100L},
+        {"chunksize", 1000L},
         {"echodelay", 0.10},
         {"echolength", 2},
         {"raindelay", 100},
@@ -36,7 +36,7 @@ int main() {
     bb->loadDefaultMutations();
 
     std::vector<std::string> modes = {
-        "Random", "Move", "Repeat", "Remove",
+        "Random", "Move", "Remove",
         "Reverse", "Null", "Swap", "Increment",
         "Rainbow", "Echo", "Average"
     };

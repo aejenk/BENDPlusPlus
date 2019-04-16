@@ -1,7 +1,7 @@
 #include "CalMutations.h"
 
 void CalMutation::mutate(std::string &contents, std::map<std::string, std::any> options) {};
-void CalMutation::mutate(std::string &contents, std::map<std::string, std::any> options) {};
+std::string CalMutation::to_string(std::map<std::string, std::any> options) {return "<error> this shouldn't appear"; };
 
 void ChunkRandomize::mutate(std::string &contents, std::map<std::string, std::any> options) {
     long iter = std::any_cast<long>(options["iterations"]);
@@ -94,8 +94,6 @@ void RepeatChunks::mutate(std::string &contents, std::map<std::string, std::any>
 
         lb->nextStep();
     }
-
-    size_t rindex;
 }
 
 std::string RepeatChunks::to_string(std::map<std::string, std::any> options) {
