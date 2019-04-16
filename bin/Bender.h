@@ -6,6 +6,7 @@
 struct Bender {
     virtual void loadFile(std::string filename) = 0;
     virtual void addMutation(std::string mutname, Mutation *m) = 0;
+    virtual void mutateUsing(std::string mutname, std::map<std::string, std::any> options) = 0;
     virtual void saveContents() = 0;
     std::map<std::string, Mutation*> mutations;
 };

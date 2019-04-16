@@ -14,10 +14,9 @@ struct CalMutation : Mutation{
 };
 
 struct ChunkMutation : CalMutation{
-
     void mutate(std::string &contents, std::map<std::string, std::any> options) override{
-        long iter = std::any_cast<long>(options.find("iterations"));
-        long chunksize = std::any_cast<long>(options.find("chunksize"));
+        long iter = std::any_cast<long>(options["iterations"]);
+        long chunksize = std::any_cast<long>(options["chunksize"]);
 
         indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
 
