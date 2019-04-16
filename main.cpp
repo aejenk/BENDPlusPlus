@@ -24,7 +24,7 @@ int main() {
     std::map<std::string, std::any> options = {
         {"iterations", 10},
         {"chunksize", 25000000},
-        {"echodelay", 0.10f},
+        {"echodecay", 0.10},
         {"echolength", 2},
         {"raindelay", 1000000},
         {"rainsize", 1},
@@ -36,7 +36,7 @@ int main() {
     bb->loadDefaultMutations();
 
     std::vector<std::string> modes = {
-        "Random", "Move", "Repeat", "Remove",
+        /**/"Random", "Move", "Repeat", "Remove",
         "Reverse", "Null", "Swap", "Increment",
         "Rainbow", "Echo", "Average"
     };

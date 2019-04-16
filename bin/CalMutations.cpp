@@ -329,7 +329,7 @@ std::string RainbowSpread::to_string(std::map<std::string, std::any> options) {
 void EchoWave::mutate(std::string &contents, std::map<std::string, std::any> options) {
     long iter = std::any_cast<int>(options["iterations"]);
     long chunksize = std::any_cast<int>(options["chunksize"]);
-    double echodecay = std::any_cast<float>(options["echodecay"]);
+    double echodecay = std::any_cast<double>(options["echodecay"]);
     long echolength = std::any_cast<int>(options["echolength"]);
 
     indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
@@ -362,7 +362,7 @@ std::string EchoWave::to_string(std::map<std::string, std::any> options) {
         << "_chk="
         << std::any_cast<int>(options["chunksize"])
         << "_decay="
-        << std::any_cast<float>(options["echodecay"])
+        << std::any_cast<double>(options["echodecay"])
         << "_len="
         << std::any_cast<int>(options["echolength"]);
     
