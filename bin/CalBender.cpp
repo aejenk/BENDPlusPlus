@@ -1,6 +1,5 @@
 #include "CalBender.h"
 
-
 void CalBender::loadFile(std::string filename){
     std::ifstream ifile = std::ifstream(filename, std::ios::in | std::ios::binary | std::ios::ate);
 
@@ -80,17 +79,17 @@ void CalBender::addMutation(std::string mutname, Mutation *m){
 
 void CalBender::loadDefaultMutations(){
     std::vector<std::pair<std::string, Mutation*>> defaults = {
-        {"Random", new ChunkRandomize()},
-        {"Move", new MoveChunks()},
-        {"Repeat", new RepeatChunks()},
-        {"Remove", new RemoveChunks()},
-        {"Reverse", new ReverseChunks()},
-        {"Null", new NullChunks()},
-        {"Swap", new SwapChunks()},
-        {"Increment", new IncrementBytes()},
-        {"Rainbow", new RainbowSpread()},
-        {"Echo", new EchoWave()},
-        {"Average", new AverageChunks()}
+        {"RANDOM", new ChunkRandomize()},
+        {"MOVE", new MoveChunks()},
+        {"REPEAT", new RepeatChunks()},
+        {"REMOVE", new RemoveChunks()},
+        {"REVERSE", new ReverseChunks()},
+        {"NULL", new NullChunks()},
+        {"SWAP", new SwapChunks()},
+        {"INCREMENT", new IncrementBytes()},
+        {"RAINBOW", new RainbowSpread()},
+        {"ECHO", new EchoWave()},
+        {"AVERAGE", new AverageChunks()}
     };
 
     for(auto mut: defaults){
@@ -102,6 +101,18 @@ void CalBender::mutateUsing(std::string mutname, std::map<std::string, std::any>
     this->muthistory += this->mutations[mutname]->to_string(options);
     this->mutations[mutname]->mutate(contents, options);
     std::cout << "\n";
+}
+
+void CalBender::setGlobalMutationOptions(std::map<std::string, std::any> options){
+    mutoptions = options;
+}
+
+std::map<std::string, std::any> CalBender::getGlobalMutationOptions(){
+    return mutoptions;
+}
+
+void CalBender::mutateUsing(std::string mutname){
+    this->mutateUsing(mutname, this->mutoptions);
 }
 
 void CalBender::saveContents(){

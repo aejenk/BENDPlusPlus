@@ -20,9 +20,21 @@ class CalBender : public Bender {
         void saveContents() override;
         void resetFile() override;
 
+        // For global configuration w/ all mutations.
+        // Said options will apply to all mutations run through this bender.
+        void setGlobalMutationOptions(std::map<std::string, std::any> options);
+
+        // Retrieval of all global options.
+        std::map<std::string, std::any> getGlobalMutationOptions();
+
+        // Not to be used if `setGlobalMutationOptions` was not run.
+        void mutateUsing(std::string mutname);
+
     private:
         std::string contents;
         std::string backup;
+
+        std::map<std::string, std::any> mutoptions;
 
         std::string muthistory; // for use in filename;
 
