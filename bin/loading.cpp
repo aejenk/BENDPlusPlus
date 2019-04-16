@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#define FIXED_FLOAT(x,y) fixed << setprecision(y) <<(x)
+#define FIXED_FLOAT(x,y) std::fixed << std::setprecision(y) <<(x)
 #define CLEARLINE() std::cout << std::setfill(' ') << std::setw(50) << "%\r";
 
 struct LoadingBar {

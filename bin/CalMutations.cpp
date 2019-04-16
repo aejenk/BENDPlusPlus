@@ -1,6 +1,7 @@
 #include "CalMutations.h"
 
 void CalMutation::mutate(std::string &contents, std::map<std::string, std::any> options) {};
+void CalMutation::mutate(std::string &contents, std::map<std::string, std::any> options) {};
 
 void ChunkRandomize::mutate(std::string &contents, std::map<std::string, std::any> options) {
     long iter = std::any_cast<long>(options["iterations"]);
@@ -22,6 +23,17 @@ void ChunkRandomize::mutate(std::string &contents, std::map<std::string, std::an
 
         lb->nextStep();
     }
+}
+
+std::string ChunkRandomize::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_random"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"]);
+    
+    return ss.str();
 }
 
 void MoveChunks::mutate(std::string &contents, std::map<std::string, std::any> options) {
@@ -46,6 +58,17 @@ void MoveChunks::mutate(std::string &contents, std::map<std::string, std::any> o
 
         lb->nextStep();
     }
+}
+
+std::string MoveChunks::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_move"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"]);
+    
+    return ss.str();
 }
 
 void RepeatChunks::mutate(std::string &contents, std::map<std::string, std::any> options) {
@@ -75,6 +98,19 @@ void RepeatChunks::mutate(std::string &contents, std::map<std::string, std::any>
     size_t rindex;
 }
 
+std::string RepeatChunks::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_repeat"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"])
+        << "_rep="
+        << std::any_cast<long>(options["repeats"]);
+    
+    return ss.str();
+}
+
 void RemoveChunks::mutate(std::string &contents, std::map<std::string, std::any> options) {
     long iter = std::any_cast<long>(options["iterations"]);
     long chunksize = std::any_cast<long>(options["chunksize"]);
@@ -99,6 +135,17 @@ void RemoveChunks::mutate(std::string &contents, std::map<std::string, std::any>
     }
 }
 
+std::string RemoveChunks::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_remove"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"]);
+    
+    return ss.str();
+}
+
 void ReverseChunks::mutate(std::string &contents, std::map<std::string, std::any> options) {
     long iter = std::any_cast<long>(options["iterations"]);
     long chunksize = std::any_cast<long>(options["chunksize"]);
@@ -121,6 +168,17 @@ void ReverseChunks::mutate(std::string &contents, std::map<std::string, std::any
     }
 }
 
+std::string ReverseChunks::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_reverse"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"]);
+    
+    return ss.str();
+}
+
 void NullChunks::mutate(std::string &contents, std::map<std::string, std::any> options) {
     long iter = std::any_cast<long>(options["iterations"]);
     long chunksize = std::any_cast<long>(options["chunksize"]);
@@ -141,6 +199,17 @@ void NullChunks::mutate(std::string &contents, std::map<std::string, std::any> o
 
         lb->nextStep();
     }
+}
+
+std::string NullChunks::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_null"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"]);
+    
+    return ss.str();
 }
 
 void SwapChunks::mutate(std::string &contents, std::map<std::string, std::any> options) {
@@ -168,6 +237,17 @@ void SwapChunks::mutate(std::string &contents, std::map<std::string, std::any> o
     }
 }
 
+std::string SwapChunks::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_swap"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"]);
+    
+    return ss.str();
+}
+
 void IncrementBytes::mutate(std::string &contents, std::map<std::string, std::any> options) {
     long iter = std::any_cast<long>(options["iterations"]);
     long chunksize = std::any_cast<long>(options["chunksize"]);
@@ -189,6 +269,19 @@ void IncrementBytes::mutate(std::string &contents, std::map<std::string, std::an
 
         lb->nextStep();
     }
+}
+
+std::string IncrementBytes::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_increment"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"])
+        << "_incby="
+        << std::any_cast<long>(options["incrementby"]);
+    
+    return ss.str();
 }
 
 void RainbowSpread::mutate(std::string &contents, std::map<std::string, std::any> options) {
@@ -213,6 +306,21 @@ void RainbowSpread::mutate(std::string &contents, std::map<std::string, std::any
 
         lb->nextStep();
     }
+}
+
+std::string RainbowSpread::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_rainbow"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"])
+        << "_rdelay="
+        << std::any_cast<long>(options["raindelay"])
+        << "_rsize="
+        << std::any_cast<long>(options["rainsize"]);
+    
+    return ss.str();
 }
 
 void EchoWave::mutate(std::string &contents, std::map<std::string, std::any> options) {
@@ -243,6 +351,21 @@ void EchoWave::mutate(std::string &contents, std::map<std::string, std::any> opt
     }
 }
 
+std::string EchoWave::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_echo"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"])
+        << "_decay="
+        << std::any_cast<float>(options["echodecay"])
+        << "_len="
+        << std::any_cast<long>(options["echolength"]);
+    
+    return ss.str();
+}
+
 void AverageChunks::mutate(std::string &contents, std::map<std::string, std::any> options) {
     long iter = std::any_cast<long>(options["iterations"]);
     long chunksize = std::any_cast<long>(options["chunksize"]);
@@ -268,4 +391,15 @@ void AverageChunks::mutate(std::string &contents, std::map<std::string, std::any
 
         lb->nextStep();
     }
+}
+
+std::string AverageChunks::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_average"
+        << "_it="
+        << std::any_cast<long>(options["iterations"])
+        << "_chk="
+        << std::any_cast<long>(options["chunksize"]);
+    
+    return ss.str();
 }

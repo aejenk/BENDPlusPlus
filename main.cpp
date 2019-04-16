@@ -8,6 +8,10 @@ struct WrongMut : Mutation {
     void mutate(std::string &contents, std::map<std::string, std::any> options){
         return;
     }
+
+    std::string to_string(std::map<std::string, std::any> options){
+        return "";
+    }
 };
 
 int main() {

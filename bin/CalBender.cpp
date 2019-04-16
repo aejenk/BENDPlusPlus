@@ -99,6 +99,7 @@ void CalBender::loadDefaultMutations(){
 }
 
 void CalBender::mutateUsing(std::string mutname, std::map<std::string, std::any> options){
+    this->muthistory += this->mutations[mutname]->to_string(options);
     this->mutations[mutname]->mutate(contents, options);
 }
 

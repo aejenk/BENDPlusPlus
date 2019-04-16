@@ -1,7 +1,6 @@
 #include "Bender.h"
 #include "CalMutations.h"
 #include <fstream>
-#include <sstream>
 #include <direct.h>
 
 #ifndef CALBENDER_H
@@ -24,6 +23,8 @@ class CalBender : public Bender {
     private:
         std::string contents;
         std::string backup;
+
+        std::string muthistory; // for use in filename;
 
         size_t bufferSize;
         size_t safetyMin;
