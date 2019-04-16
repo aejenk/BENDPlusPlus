@@ -65,7 +65,14 @@ void CalBender::loadFile(std::string filename){
 }
 
 void CalBender::addMutation(std::string mutname, Mutation *m){
-    CalMutation *cm = static_cast<CalMutation*>(m);
+    CalMutation *cm = dynamic_cast<CalMutation*>(m);
+    
+    // The mutation passed needs to be of type CalMutation or a subclass of it.
+    if(cm = nullptr) {
+        cout << "Couldn't add mutation \"" << mutname << "\" - Mutation passed not of type CalMutation." << endl;
+        return;
+    }
+
     cm->safetymin = safetyMin;
     mutations.emplace(mutname, cm);
 }
