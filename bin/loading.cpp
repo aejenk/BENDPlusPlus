@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <string>
 #define FIXED_FLOAT(x,y) fixed << setprecision(y) <<(x)
+#define CLEARLINE() std::cout << std::setfill(' ') << std::setw(50) << "%\r";
 
 using namespace std;
 
@@ -28,7 +29,7 @@ struct LoadingBar {
             progressBuffer = 0.0;
         }
         else return;
-        cout << "[" << name << "](" << FIXED_FLOAT(progress*100.0,2) << ") %\r" ;
+        cout << "[" << name << "] " << FIXED_FLOAT(progress*100.0,2) << "%\r" ;
         cout.flush();
     }
 };

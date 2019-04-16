@@ -1,40 +1,27 @@
-#include "Mutation.h"
-#include "loading.cpp"
-#include <random>
+#include "CalMutations.h"
 
-#ifndef BASEMUT_CPP
-#define BASEMUT_CPP
+void CalMutation::mutate(string &contents, std::map<std::string, std::any> options) {};
 
-struct CalMutation : Mutation{
-    std::default_random_engine generator;
-    std::uniform_int_distribution<size_t> indexDist;
-    size_t safetymin = 0;
+void ChunkMutation::mutate(std::string &contents, std::map<std::string, std::any> options) {
+    long iter = std::any_cast<long>(options["iterations"]);
+    long chunksize = std::any_cast<long>(options["chunksize"]);
 
-    void mutate(std::string &contents, std::map<std::string, std::any> options) override {};
-};
+    indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
 
-struct ChunkMutation : CalMutation{
-    void mutate(std::string &contents, std::map<std::string, std::any> options) override{
-        long iter = std::any_cast<long>(options["iterations"]);
-        long chunksize = std::any_cast<long>(options["chunksize"]);
+    LoadingBar *lb = new LoadingBar(iter);
+    lb->setLabel("Chunks");
 
-        indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
+    size_t rindex;
 
-        LoadingBar *lb = new LoadingBar(iter);
-        lb->setLabel("Chunks");
+    for(int i = 0; i < iter; i++){
+        rindex = indexDist(generator);
 
-        size_t rindex;
-
-        for(int i = 0; i < iter; i++){
-            rindex = indexDist(generator);
-
-            for(int j = rindex; j < chunksize + rindex; j++){
-                contents[j] = static_cast<char>(rand() % 256);
-            }
-
-            lb->nextStep();
+        for(int j = rindex; j < chunksize + rindex; j++){
+            contents[j] = static_cast<char>(rand() % 256);
         }
-    }
-};
 
-#endif
+        lb->nextStep();
+    }
+
+    CLEARLINE();
+}

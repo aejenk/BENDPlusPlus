@@ -1,5 +1,5 @@
 // #include "bin/binbend.h"
-#include "bin/CalBender.cpp"
+#include "bin/CalBender.h"
 
 using namespace std;
 
@@ -7,11 +7,11 @@ using namespace std;
 int main() {
 
     Bender *bb = new CalBender();
-    bb->loadFile("burgyuh.avi");
+    bb->loadFile("voila.mp4");
     bb->addMutation("ChunkM", new ChunkMutation());
     bb->mutateUsing("ChunkM", {
         {"iterations", 1000L},
-        {"chunksize", 80000000L}
+        {"chunksize", 26000L}
     });
     bb->saveContents();
 
