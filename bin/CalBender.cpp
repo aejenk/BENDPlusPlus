@@ -103,16 +103,51 @@ void CalBender::mutateUsing(std::string mutname, std::map<std::string, std::any>
     std::cout << "\n";
 }
 
-void CalBender::setGlobalMutationOptions(std::map<std::string, std::any> options){
+void CalBender::setGlobalMutationOptions(std::map<std::string, std::string> options){
     mutoptions = options;
 }
 
-std::map<std::string, std::any> CalBender::getGlobalMutationOptions(){
+std::map<std::string, std::string> CalBender::getGlobalMutationOptions(){
     return mutoptions;
 }
 
 void CalBender::mutateUsing(std::string mutname){
     this->mutateUsing(mutname, this->mutoptions);
+}
+
+void CalBender::mutateUsing(std::string mutname, std::map<std::string, std::string> options){
+    std::map<std::string, std::any> generatedOptions;
+
+    for(auto option: options){
+        // Gets the range of the option.
+        std::string optrange = option.second;
+
+        // Gets the minimum and maximum of the option range in string form.
+        std::vector<std::string> minmax = Utility::split(optrange, '-');
+
+        // Checks whether the number is a double or not by finding a period.
+        // This operates on the assumption that in the options,
+        //      the only valid option with a period would be a doubletyped option.
+        bool isDouble = optrange.find('.') != std::string::npos;
+
+        // If no range was detected, add the option directly.
+        if(minmax.size() == 1){
+            (isDouble) ? generatedOptions.emplace(option.first, stod(minmax[0]))
+                       : generatedOptions.emplace(option.first, stoi(minmax[0]));
+        }
+        // If the numbers were found to be double, add a generated double number.
+        else if(isDouble){
+            realRand = std::uniform_real_distribution(stod(minmax[0]), stod(minmax[1]));
+            generatedOptions.emplace(option.first, realRand(optionGenerator));
+        }
+        // If they were found to be integers, add a generated integer number.
+        else {
+            intRand = std::uniform_int_distribution(stoi(minmax[0]), stoi(minmax[1]));
+            generatedOptions.emplace(option.first, intRand(optionGenerator));   
+        }
+    }
+
+    this->mutateUsing(mutname, generatedOptions);
 }
 
 void CalBender::saveContents(){
