@@ -89,7 +89,11 @@ void CalBender::loadDefaultMutations(){
         {"INCREMENT", new IncrementBytes()},
         {"RAINBOW", new RainbowSpread()},
         {"ECHO", new EchoWave()},
-        {"AVERAGE", new AverageChunks()}
+        {"AVERAGE", new AverageChunks()},
+        {"INVERT", new Inversion()},
+        {"DRAG", new DragScratch()},
+        {"SORT", new PixelSort()},
+        {"MAGNIFI", new Magnifi()},
     };
 
     for(auto mut: defaults){

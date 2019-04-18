@@ -406,3 +406,140 @@ std::string AverageChunks::to_string(std::map<std::string, std::any> options) {
     
     return ss.str();
 }
+
+void Inversion::mutate(std::string &contents, std::map<std::string, std::any> options) {
+    long iter = std::any_cast<int>(options["iterations"]);
+    long chunksize = std::any_cast<int>(options["chunksize"]);
+
+    indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
+
+    LoadingBar *lb = new LoadingBar(iter);
+    lb->setLabel("Inversion");
+
+    size_t rindex;
+
+    for(int i = 0; i < iter; i++){
+        rindex = indexDist(generator);
+
+        long avg = 0;
+        for(int j = rindex; j < chunksize+rindex; j++){
+            contents[j] = 255 - contents[j];
+        }
+
+        lb->nextStep();
+    }
+}
+
+std::string Inversion::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_invert"
+        << "_it="
+        << std::any_cast<int>(options["iterations"])
+        << "_chk="
+        << std::any_cast<int>(options["chunksize"]);
+    
+    return ss.str();
+}
+
+void DragScratch::mutate(std::string &contents, std::map<std::string, std::any> options) {
+    long iter = std::any_cast<int>(options["iterations"]);
+    long chunksize = std::any_cast<int>(options["chunksize"]);
+
+    indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
+
+    LoadingBar *lb = new LoadingBar(iter);
+    lb->setLabel("Drag");
+
+    size_t rindex;
+
+    for(int i = 0; i < iter; i++){
+        rindex = indexDist(generator);
+
+        char dragger = contents[rindex];
+
+        for(int j = rindex+1; j < chunksize+rindex; j++){
+            contents[j] = dragger;
+        }
+
+        lb->nextStep();
+    }
+}
+
+std::string DragScratch::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_drag"
+        << "_it="
+        << std::any_cast<int>(options["iterations"])
+        << "_chk="
+        << std::any_cast<int>(options["chunksize"]);
+    
+    return ss.str();
+}
+
+void PixelSort::mutate(std::string &contents, std::map<std::string, std::any> options) {
+    long iter = std::any_cast<int>(options["iterations"]);
+    long chunksize = std::any_cast<int>(options["chunksize"]);
+
+    indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
+
+    LoadingBar *lb = new LoadingBar(iter);
+    lb->setLabel("Sort");
+
+    size_t rindex;
+
+    for(int i = 0; i < iter; i++){
+        do{
+            rindex = indexDist(generator);
+        } while(chunksize+rindex > contents.size());
+        char dragger = contents[rindex];
+        std::sort(contents.begin()+rindex, contents.begin()+rindex+chunksize);
+        lb->nextStep();
+    }
+}
+
+std::string PixelSort::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_sort"
+        << "_it="
+        << std::any_cast<int>(options["iterations"])
+        << "_chk="
+        << std::any_cast<int>(options["chunksize"]);
+    
+    return ss.str();
+}
+
+void Magnifi::mutate(std::string &contents, std::map<std::string, std::any> options) {
+    long iter = std::any_cast<int>(options["iterations"]);
+    long chunksize = std::any_cast<int>(options["chunksize"]);
+    double factor = std::any_cast<double>(options["magnify"]);
+
+    indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
+
+    LoadingBar *lb = new LoadingBar(iter);
+    lb->setLabel("Magnifi");
+
+    size_t rindex;
+
+    for(int i = 0; i < iter; i++){
+        rindex = indexDist(generator);
+
+        for(int j = rindex+1; j < chunksize+rindex; j++){
+            contents[j] *= factor;
+        }
+
+        lb->nextStep();
+    }
+}
+
+std::string Magnifi::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_magnifi"
+        << "_it="
+        << std::any_cast<int>(options["iterations"])
+        << "_chk="
+        << std::any_cast<int>(options["chunksize"])
+        << "_fac="
+        << std::any_cast<double>(options["magnify"]);
+    
+    return ss.str();
+}

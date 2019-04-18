@@ -32,6 +32,8 @@ int main() {
         // Echo options
         {"echodecay", inioptions.Get("Echo Options", "echodecay", "")},
         {"echolength", inioptions.Get("Echo Options", "echolength", "")},
+        // Magnifi options
+        {"magnify", inioptions.Get("Magnifi Options", "magnifyby", "")},
     };
 
     bb->loadDefaultMutations();

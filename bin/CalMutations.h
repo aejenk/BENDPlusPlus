@@ -71,4 +71,25 @@ struct AverageChunks : CalMutation {
     std::string to_string(std::map<std::string, std::any> options) override;
 };
 
+struct Inversion : CalMutation {
+    void mutate(std::string &contents, std::map<std::string, std::any> options) override;
+    std::string to_string(std::map<std::string, std::any> options) override;
+};
+
+struct DragScratch : CalMutation {
+    void mutate(std::string &contents, std::map<std::string, std::any> options) override;
+    std::string to_string(std::map<std::string, std::any> options) override;
+};
+
+struct PixelSort : CalMutation {
+    void mutate(std::string &contents, std::map<std::string, std::any> options) override;
+    std::string to_string(std::map<std::string, std::any> options) override;
+};
+
+struct Magnifi : CalMutation {
+    void mutate(std::string &contents, std::map<std::string, std::any> options) override;
+    std::string to_string(std::map<std::string, std::any> options) override;
+};
+
+
 #endif
