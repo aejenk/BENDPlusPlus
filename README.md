@@ -47,9 +47,9 @@ The repo has an example `options.ini` as follows:
 
 ```ini
 [Main Options]
-filename = GGQH.avi
+filename = Example.avi
 loops = 10
-modes = MAGNIFI
+modes = MAGNIFI HANDSHAKE TIMEWARP SORT DRAG
 
 [CALMode Options]
 iterations = 1-10
@@ -75,14 +75,6 @@ magnifyby = 0.9-1.1
 [Timewarp Options]
 speedupby = 2-5
 ```
-
-; Possible modes
-; modes = RANDOM REPEAT REVERSE REMOVE 
-;       MOVE NULL SWAP INCREMENT 
-;       RAINBOW ECHO AVERAGE
-;       INVERT DRAG SORT
-;       MAGNIFI MIRROR HANDSHAKE
-;       TIMEWARP
 
 ### Compilation
 Compiling is as easy as running `make`. 
