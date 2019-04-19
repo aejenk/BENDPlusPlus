@@ -39,9 +39,50 @@ So far there are multiple mutations. Not all mutations are built the same howeve
 ### Configuring and Executing BEND++
 All you need to databend is `bend.exe` (which will have a better name in the future) and `options.ini`. They need to be in the same folder.
 To configure the options of **BEND++**, you will need to edit `options.ini`, which is self-explanatory.
-Once the options are up to your liking, execute `m.exe` and watch the databending work.
+Once the options are up to your liking, execute `bend.exe` and watch the databending work.
 
 To note, `CALBender` does not discriminate between file types. Any and all files can be entered as an input to the program, although very large files may crash the application.
+
+The repo has an example `options.ini` as follows:
+
+```ini
+[Main Options]
+filename = GGQH.avi
+loops = 10
+modes = MAGNIFI
+
+[CALMode Options]
+iterations = 1-10
+chunksize = 12800000-1280000000
+
+[Repeat Options]
+repeats = 1-10
+
+[Increment Options]
+incrementby = 1-255
+
+[Rainbow Options]
+rainsize = 1-5
+raindelay = 6200-62000
+
+[Echo Options]
+echodecay = 0.0-1.0
+echolength = 1-10
+
+[Magnifi Options]
+magnifyby = 0.9-1.1
+
+[Timewarp Options]
+speedupby = 2-5
+```
+
+; Possible modes
+; modes = RANDOM REPEAT REVERSE REMOVE 
+;       MOVE NULL SWAP INCREMENT 
+;       RAINBOW ECHO AVERAGE
+;       INVERT DRAG SORT
+;       MAGNIFI MIRROR HANDSHAKE
+;       TIMEWARP
 
 ### Compilation
 Compiling is as easy as running `make`. 
