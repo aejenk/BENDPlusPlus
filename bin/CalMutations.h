@@ -91,5 +91,20 @@ struct Magnifi : CalMutation {
     std::string to_string(std::map<std::string, std::any> options) override;
 };
 
+struct Mirror : CalMutation {
+    void mutate(std::string &contents, std::map<std::string, std::any> options) override;
+    std::string to_string(std::map<std::string, std::any> options) override;
+};
+
+struct Handshake : CalMutation {
+    void mutate(std::string &contents, std::map<std::string, std::any> options) override;
+    std::string to_string(std::map<std::string, std::any> options) override;
+};
+
+struct Timewarp : CalMutation {
+    void mutate(std::string &contents, std::map<std::string, std::any> options) override;
+    std::string to_string(std::map<std::string, std::any> options) override;
+};
+
 
 #endif

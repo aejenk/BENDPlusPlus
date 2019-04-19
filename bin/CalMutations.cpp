@@ -543,3 +543,118 @@ std::string Magnifi::to_string(std::map<std::string, std::any> options) {
     
     return ss.str();
 }
+
+void Mirror::mutate(std::string &contents, std::map<std::string, std::any> options) {
+    long iter = std::any_cast<int>(options["iterations"]);
+    long chunksize = std::any_cast<int>(options["chunksize"]);
+
+    indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
+
+    LoadingBar *lb = new LoadingBar(iter);
+    lb->setLabel("Mirror");
+
+    size_t rindex;
+
+    for(int i = 0; i < iter; i++){
+        rindex = indexDist(generator);
+
+        size_t upperbound = chunksize + rindex;
+
+        for(int j = rindex; j < upperbound/2; j++){
+            contents[upperbound-(j-rindex)] = contents[j];
+        }
+
+        lb->nextStep();
+    }
+}
+
+std::string Mirror::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "mirror"
+        << "_it="
+        << std::any_cast<int>(options["iterations"])
+        << "_chk="
+        << std::any_cast<int>(options["chunksize"]);
+    
+    return ss.str();
+}
+
+void Handshake::mutate(std::string &contents, std::map<std::string, std::any> options) {
+    long iter = std::any_cast<int>(options["iterations"]);
+    long chunksize = std::any_cast<int>(options["chunksize"]);
+
+    indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
+
+    LoadingBar *lb = new LoadingBar(iter);
+    lb->setLabel("Handshake");
+
+    size_t rindex;
+
+    for(int i = 0; i < iter; i++){
+        rindex = indexDist(generator);
+
+        size_t upperbound = chunksize + rindex;
+
+        for(int j = rindex; j < upperbound/2; j++){
+            int added = contents[j] + contents[upperbound-(j-rindex)];
+
+            // Both bytes are set to the sum.
+            contents[j] = contents[upperbound-(j-rindex)] = added;
+        }
+
+        lb->nextStep();
+    }
+}
+
+std::string Handshake::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_handshake"
+        << "_it="
+        << std::any_cast<int>(options["iterations"])
+        << "_chk="
+        << std::any_cast<int>(options["chunksize"]);
+    
+    return ss.str();
+}
+
+void Timewarp::mutate(std::string &contents, std::map<std::string, std::any> options) {
+    long iter = std::any_cast<int>(options["iterations"]);
+    long chunksize = std::any_cast<int>(options["chunksize"]);
+    long speedup = std::any_cast<int>(options["speedup"]);
+
+    indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
+
+    LoadingBar *lb = new LoadingBar(iter);
+    lb->setLabel("Timewarp");
+
+    size_t rindex;
+
+    for(int i = 0; i < iter; i++){
+        rindex = indexDist(generator);
+
+        int j;
+        int cj;
+
+        for(j = rindex, cj=j; j < chunksize+rindex; j++,cj+=speedup){
+            if(cj >= contents.size()){
+                cj = (cj%contents.size()) + safetymin;
+            }
+            contents[j] = contents[cj];
+        }
+
+        lb->nextStep();
+    }
+}
+
+std::string Timewarp::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_timewarp"
+        << "_it="
+        << std::any_cast<int>(options["iterations"])
+        << "_chk="
+        << std::any_cast<int>(options["chunksize"])
+        << "_spd="
+        << std::any_cast<int>(options["speedup"]);
+    
+    return ss.str();
+}

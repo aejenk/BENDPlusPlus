@@ -94,6 +94,9 @@ void CalBender::loadDefaultMutations(){
         {"DRAG", new DragScratch()},
         {"SORT", new PixelSort()},
         {"MAGNIFI", new Magnifi()},
+        {"MIRROR", new Mirror()},
+        {"HANDSHAKE", new Handshake()},
+        {"TIMEWARP", new Timewarp()},
     };
 
     for(auto mut: defaults){

@@ -34,6 +34,8 @@ int main() {
         {"echolength", inioptions.Get("Echo Options", "echolength", "")},
         // Magnifi options
         {"magnify", inioptions.Get("Magnifi Options", "magnifyby", "")},
+        // Timewarp options
+        {"speedup", inioptions.Get("Timewarp Options", "speedupby", "")},
     };
 
     bb->loadDefaultMutations();
