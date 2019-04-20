@@ -106,5 +106,10 @@ struct Timewarp : CalMutation {
     std::string to_string(std::map<std::string, std::any> options) override;
 };
 
+struct Slowdown : CalMutation {
+    void mutate(std::string &contents, std::map<std::string, std::any> options) override;
+    std::string to_string(std::map<std::string, std::any> options) override;
+};
+
 
 #endif

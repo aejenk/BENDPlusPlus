@@ -97,6 +97,7 @@ void CalBender::loadDefaultMutations(){
         {"MIRROR", new Mirror()},
         {"HANDSHAKE", new Handshake()},
         {"TIMEWARP", new Timewarp()},
+        {"SLOWDOWN", new Slowdown()},
     };
 
     for(auto mut: defaults){

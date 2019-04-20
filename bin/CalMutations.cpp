@@ -658,3 +658,50 @@ std::string Timewarp::to_string(std::map<std::string, std::any> options) {
     
     return ss.str();
 }
+
+void Slowdown::mutate(std::string &contents, std::map<std::string, std::any> options) {
+    long iter = std::any_cast<int>(options["iterations"]);
+    long chunksize = std::any_cast<int>(options["chunksize"]);
+    long slowby = std::any_cast<int>(options["slowby"]);
+
+    indexDist = std::uniform_int_distribution<size_t>(safetymin, contents.size()-chunksize);
+
+    LoadingBar *lb = new LoadingBar(iter);
+    lb->setLabel("Slowdown");
+
+    size_t rindex;
+
+    for(int i = 0; i < iter; i++){
+        rindex = indexDist(generator);
+
+        int j;
+        int cj;
+
+        std::string toslow = contents.substr(rindex, chunksize);
+
+        for(j = rindex, cj=j; j < chunksize+rindex; j++){
+            if(cj >= contents.size()){
+                cj = (cj%contents.size()) + safetymin;
+            }
+            int cj_hold = cj;
+            for(; cj < cj_hold+slowby; cj++){
+                contents[cj] = toslow[j-rindex];
+            }
+        }
+
+        lb->nextStep();
+    }
+}
+
+std::string Slowdown::to_string(std::map<std::string, std::any> options) {
+    std::stringstream ss;
+    ss  << "_slowdown"
+        << "_it="
+        << std::any_cast<int>(options["iterations"])
+        << "_chk="
+        << std::any_cast<int>(options["chunksize"])
+        << "_slw="
+        << std::any_cast<int>(options["slowby"]);
+    
+    return ss.str();
+}

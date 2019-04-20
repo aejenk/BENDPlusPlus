@@ -36,6 +36,8 @@ int main() {
         {"magnify", inioptions.Get("Magnifi Options", "magnifyby", "")},
         // Timewarp options
         {"speedup", inioptions.Get("Timewarp Options", "speedupby", "")},
+        // Slowdown options
+        {"slowby", inioptions.Get("Slowdown Options", "slowby", "")},
     };
 
     bb->loadDefaultMutations();
