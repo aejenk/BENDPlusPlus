@@ -1,6 +1,8 @@
 # BEND++
 A databender API made in C++. Made to be fast, effective, full of features, and easy to use.
 
+Download from [here](https://github.com/MasterTextman/BENDPlusPlus/releases/download/0.2/BEND++.zip)!
+
 ## Downloading source
 Due to a dependency on a repository called `inith`, the actual command to be able to work on this is:
 
